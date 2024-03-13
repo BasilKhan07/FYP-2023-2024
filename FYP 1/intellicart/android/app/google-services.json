@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "769137324877",
+    "project_id": "intellicart-9400a",
+    "storage_bucket": "intellicart-9400a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:769137324877:android:438af3547919498f03fd04",
+        "android_client_info": {
+          "package_name": "com.example.intellicart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnX5bVZR_Xk21oEu1xYdqcokQR-67z3EA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
