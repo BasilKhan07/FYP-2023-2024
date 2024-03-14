@@ -1,0 +1,18 @@
+{
+    "0": "apple_blotch",
+    "1": "apple_healthy",
+    "2": "apple_rotten", 
+    "3": "apple_scab",
+    "4": "banana_firm", 
+    "5": "banana_heavilybruised", 
+    "6": "banana_slightlybruised", 
+    "7": "greenchilli_damaged", 
+    "8": "greenchilli_ripe", 
+    "9": "orange_greening", 
+    "10": "orange_healthy", 
+    "11": "orange_rotten", 
+    "12": "tomato_damaged", 
+    "13": "tomato_old", 
+    "14": "tomato_ripe", 
+    "15": "tomato_unripe"
+}
