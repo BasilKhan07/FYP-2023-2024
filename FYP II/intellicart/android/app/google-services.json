@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "454647962462",
+    "project_id": "fyp-intellicart",
+    "storage_bucket": "fyp-intellicart.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454647962462:android:d7ec561bf2e88d698a4dcf",
+        "android_client_info": {
+          "package_name": "com.example.intellicart"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWC_rm52n5zxb1SPiEDUEu2y-P0Gfj8V8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
