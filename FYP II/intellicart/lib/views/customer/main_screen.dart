@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intellicart/views/customer/nav_screens/favorites_screen.dart';
+import 'package:intellicart/views/customer/nav_screens/feedback_screen.dart';
+import 'package:intellicart/views/customer/nav_screens/nearbycart_screen.dart';
+import 'package:intellicart/views/customer/nav_screens/quality_screen.dart';
+import 'package:intellicart/views/customer/nav_screens/search_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -8,12 +13,56 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
+  int _pageIndex = 0;
+
+  final List<Widget> _pages = const [
+    NearbyScreen(),
+    SearchScreen(),
+    FeedbackScreen(),
+    FavoritesScreen(),
+    QualityAssessmentScreen(),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Main Screen'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Welcome User'),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _pageIndex,
+        onTap: (value) {
+          setState(() {
+            _pageIndex = value;
+          });
+        },
+        unselectedItemColor: Colors.black,
+        selectedItemColor: Colors.green,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.near_me),
+            label: 'Nearby',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.feedback),
+            label: 'Feedback',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assessment),
+            label: 'Quality',
+          ),
+        ],
+      ),
+      body: _pages[_pageIndex],
     );
   }
 }
