@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intellicart/firebase_options.dart';
 import 'package:intellicart/views/customer/auth/register_screen.dart';
-import 'package:intellicart/views/customer/main_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
