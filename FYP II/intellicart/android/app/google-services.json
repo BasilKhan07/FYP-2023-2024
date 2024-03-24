@@ -12,7 +12,12 @@
           "package_name": "com.example.intellicart"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "454647962462-dhdovr4hutq0j7us77pt2b0a1hp7jl07.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCWC_rm52n5zxb1SPiEDUEu2y-P0Gfj8V8"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454647962462-dhdovr4hutq0j7us77pt2b0a1hp7jl07.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "454647962462-18bmfgpj90vbehnkuljr6lklj5c68h9d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.intellicart"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +48,20 @@
           "package_name": "com.finalyearproject.intellicart"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "454647962462-4djt856s0dp7a5qrr7e359mgvbqkgv8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.finalyearproject.intellicart",
+            "certificate_hash": "947f0351f793da4abd3fc0cdde3b076e17419938"
+          }
+        },
+        {
+          "client_id": "454647962462-dhdovr4hutq0j7us77pt2b0a1hp7jl07.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCWC_rm52n5zxb1SPiEDUEu2y-P0Gfj8V8"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454647962462-dhdovr4hutq0j7us77pt2b0a1hp7jl07.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "454647962462-18bmfgpj90vbehnkuljr6lklj5c68h9d.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.intellicart"
+              }
+            }
+          ]
         }
       }
     }
