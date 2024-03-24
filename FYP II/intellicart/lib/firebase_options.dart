@@ -54,7 +54,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCWC_rm52n5zxb1SPiEDUEu2y-P0Gfj8V8',
-    appId: '1:454647962462:android:d7ec561bf2e88d698a4dcf',
+    appId: '1:454647962462:android:c55e0f1561680c0e8a4dcf',
     messagingSenderId: '454647962462',
     projectId: 'fyp-intellicart',
     storageBucket: 'fyp-intellicart.appspot.com',
