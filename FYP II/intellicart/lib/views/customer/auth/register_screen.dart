@@ -1,22 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/auth_controller.dart';
+import 'package:intellicart/utils/show_snackBar.dart';
 import 'package:intellicart/views/customer/auth/login_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
   final AuthController _authController = AuthController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late String email;
+ 
   late String fullName;
+
   late String phoneNumber;
+
   late String password;
 
   _signUpUser() async {
     if (_formKey.currentState!.validate()) {
       await _authController.signUpUsers(email, fullName, phoneNumber, password);
+      return showSnack(context, 'Congratulations, Account Created');
     } else {
-      print('Error Occured');
+      return showSnack(context, 'Please fields must not be empty');
     }
   }
 
