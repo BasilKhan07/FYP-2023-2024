@@ -17,6 +17,7 @@ class AuthController {
           email: email,
           password: password,
         );
+        res = "success";
       } else {
         res = 'Please fields must not be empty';
       }
