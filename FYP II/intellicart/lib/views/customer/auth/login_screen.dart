@@ -19,7 +19,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   late String password;
 
+  bool _isLoading = false;
+
   _loginUsers() async {
+    setState(() {
+      _isLoading = true;
+    });
     if (_formKey.currentState!.validate()) {
       String res = await _authController.loginUsers(email, password);
       if (res == 'success' && context.mounted) {
@@ -37,6 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       }
     } else {
+      setState(() {
+        _isLoading = false;
+      });
       return showSnack(context, 'Please fields must not be empty');
     }
   }
@@ -77,6 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: const EdgeInsets.all(13.0),
               child: TextFormField(
+                obscureText: true,
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please Password field must not be empty';
@@ -104,16 +113,20 @@ class _LoginScreenState extends State<LoginScreen> {
                   color: Colors.lightGreenAccent,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Center(
-                  child: Text(
-                    'Login',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 5,
-                    ),
-                  ),
+                child: Center(
+                  child: _isLoading
+                      ? const CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : const Text(
+                          'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 5,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -122,7 +135,9 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const Text('Need An Account?'),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
                   child: const Text('Register'),
                 )
               ],

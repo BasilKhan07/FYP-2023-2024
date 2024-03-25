@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intellicart/controllers/auth_controller.dart';
 import 'package:intellicart/utils/show_snackBar.dart';
 import 'package:intellicart/views/customer/auth/login_screen.dart';
@@ -25,13 +28,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool _isLoading = false;
 
+  Uint8List? _image;
+
   _signUpUser() async {
     setState(() {
       _isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
       await _authController
-          .signUpUsers(email, fullName, phoneNumber, password)
+          .signUpUsers(email, fullName, phoneNumber, password, _image)
           .whenComplete(
         () {
           setState(() {
@@ -51,6 +56,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
+  selectGalleryImage() async {
+    Uint8List im = await _authController.pickProfileImage(ImageSource.gallery);
+    setState(() {
+      _image = im;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,9 +79,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     fontSize: 20,
                   ),
                 ),
-                const CircleAvatar(
-                  radius: 64,
-                  backgroundColor: Colors.lightGreenAccent,
+                const SizedBox(
+                  height: 10,
+                ),
+                Stack(
+                  children: [
+                    _image != null
+                        ? CircleAvatar(
+                            radius: 55,
+                            backgroundColor: Colors.lightGreenAccent,
+                            backgroundImage: MemoryImage(_image!),
+                          )
+                        : const CircleAvatar(
+                            radius: 55,
+                            backgroundColor: Colors.lightGreenAccent,
+                            backgroundImage: NetworkImage(
+                                'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'),
+                          ),
+                    Positioned(
+                      bottom: 35,
+                      right: 35,
+                      child: IconButton(
+                        onPressed: () {
+                          selectGalleryImage();
+                        },
+                        icon: const Icon(
+                          CupertinoIcons.photo,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 Padding(
                   padding: const EdgeInsets.all(13.0),
