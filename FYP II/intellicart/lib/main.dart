@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intellicart/firebase_options.dart';
 import 'package:intellicart/views/customer/auth/register_screen.dart';
 
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: RegisterScreen(),
+      home: const RegisterScreen(),
     );
   }
 }
