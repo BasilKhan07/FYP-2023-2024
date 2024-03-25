@@ -16,18 +16,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late String email;
- 
+
   late String fullName;
 
   late String phoneNumber;
 
   late String password;
 
+  bool _isLoading = false;
+
   _signUpUser() async {
+    setState(() {
+      _isLoading = true;
+    });
     if (_formKey.currentState!.validate()) {
-      await _authController.signUpUsers(email, fullName, phoneNumber, password);
-      return showSnack(context, 'Congratulations, Account Created');
+      await _authController
+          .signUpUsers(email, fullName, phoneNumber, password)
+          .whenComplete(
+        () {
+          setState(() {
+            _formKey.currentState!.reset();
+            _isLoading = false;
+          });
+        },
+      );
+      if (context.mounted) {
+        return showSnack(context, 'Congratulations, Account Created');
+      }
     } else {
+      setState(() {
+        _isLoading = false;
+      });
       return showSnack(context, 'Please fields must not be empty');
     }
   }
@@ -109,6 +128,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 Padding(
                   padding: const EdgeInsets.all(13.0),
                   child: TextFormField(
+                    obscureText: true,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please Password must not be empty';
@@ -135,16 +155,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: Colors.lightGreenAccent,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Center(
-                      child: Text(
-                        'Register',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 4,
-                        ),
-                      ),
+                    child: Center(
+                      child: _isLoading
+                          ? const CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : const Text(
+                              'Register',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 4,
+                              ),
+                            ),
                     ),
                   ),
                 ),

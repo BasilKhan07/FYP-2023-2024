@@ -8,27 +8,46 @@ class AuthController {
   Future<String> signUpUsers(String email, String fullName, String phoneNumber,
       String password) async {
     String res = 'Some error occured';
-
     try {
       if (email.isNotEmpty &&
           fullName.isNotEmpty &&
           phoneNumber.isNotEmpty &&
           password.isNotEmpty) {
-        // Create the Users
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
-        await _firestore.collection('customers').doc(cred.user!.uid).set({
-          'email': email,
-          'fullName': fullName,
-          'phoneNumber': phoneNumber,
-        });
+        await _firestore.collection('customers').doc(cred.user!.uid).set(
+          {
+            'email': email,
+            'fullName': fullName,
+            'phoneNumber': phoneNumber,
+            'customerId': cred.user!.uid,
+          },
+        );
         res = "success";
       } else {
         res = 'Please fields must not be empty';
       }
-    } catch (e) {}
+    } catch (e) {
+      res = e.toString();
+    }
+    return res;
+  }
+
+  Future<String> loginUsers(String email, String password) async {
+    String res = 'Something went wrong';
+    try {
+      if (email.isNotEmpty && password.isNotEmpty) {
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
+        res = 'success';
+      } else {
+        res = 'Please Fields must not be empty';
+      }
+    } catch (e) {
+      res = e.toString();
+    }
     return res;
   }
 }
