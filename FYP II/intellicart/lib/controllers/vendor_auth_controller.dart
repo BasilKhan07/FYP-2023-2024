@@ -5,27 +5,31 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AuthController {
+class VendorAuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   _uploadProfileImageToStorage(Uint8List? image) async {
     Reference ref =
-        _storage.ref().child('profilePics').child(_auth.currentUser!.uid);
-    UploadTask uploadTask = ref.putData(image!);
+        _storage.ref().child('vendorProfilePics').child(_auth.currentUser!.uid);
+    UploadTask uploadTask =
+        ref.putData(image!, SettableMetadata(contentType: 'image/jpeg'));
     TaskSnapshot snapshot = await uploadTask;
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
   }
 
   pickProfileImage(ImageSource source) async {
-    final ImagePicker imagePicker = ImagePicker();
-    XFile? file = await imagePicker.pickImage(source: source);
-    if (file != null) {
-      return await file.readAsBytes();
-    } else {
-      print('No Image is Selected');
+    try {
+      final ImagePicker imagePicker = ImagePicker();
+      XFile? file = await imagePicker.pickImage(source: source);
+      if (file != null) {
+        return await file.readAsBytes();
+      }
+      return null;
+    } catch (e) {
+      throw Exception('Failed to pick image: $e');
     }
   }
 
@@ -43,15 +47,16 @@ class AuthController {
           password: password,
         );
         String profileImageUrl = await _uploadProfileImageToStorage(image);
-        await _firestore.collection('customers').doc(cred.user!.uid).set(
+        await _firestore.collection('vendors').doc(cred.user!.uid).set(
           {
             'email': email,
             'fullName': fullName,
             'phoneNumber': phoneNumber,
-            'customerId': cred.user!.uid,
+            'vendorId': cred.user!.uid,
             'profileImage': profileImageUrl,
           },
         );
+
         res = "success";
       } else {
         res = 'Please fields must not be empty';

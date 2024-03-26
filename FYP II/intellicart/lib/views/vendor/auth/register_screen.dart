@@ -1,21 +1,21 @@
 import 'dart:typed_data';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intellicart/controllers/customer_auth_controller.dart';
-import 'package:intellicart/utils/show_snackBar.dart';
-import 'package:intellicart/views/customer/auth/login_screen.dart';
+import 'package:intellicart/controllers/vendor_auth_controller.dart';
+import 'package:intellicart/utils/show_snackbar.dart';
+import 'package:intellicart/views/vendor/auth/login_screen.dart';
 
-class CustomerRegisterScreen extends StatefulWidget {
-  const CustomerRegisterScreen({super.key});
+class VendorRegisterScreen extends StatefulWidget {
+  const VendorRegisterScreen({super.key});
 
   @override
-  State<CustomerRegisterScreen> createState() => _CustomerRegisterScreenState();
+  State<VendorRegisterScreen> createState() => _VendorRegisterScreenState();
 }
 
-class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
-  final CustomerAuthController _authController = CustomerAuthController();
-
+class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
+  final VendorAuthController _authController = VendorAuthController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   late String email;
@@ -42,7 +42,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
           setState(() {
             _formKey.currentState!.reset();
             _isLoading = false;
-            _image = null; 
+            _image = null;
           });
         },
       );
@@ -75,7 +75,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Text(
-                  'Create Customer' 's Account',
+                  'Create Vendor''s Account',
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -223,7 +223,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return const CustomerLoginScreen();
+                              return const VendorLoginScreen();
                             },
                           ),
                         );

@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:intellicart/controllers/customer_auth_controller.dart';
+import 'package:intellicart/controllers/vendor_auth_controller.dart';
 import 'package:intellicart/utils/show_snackBar.dart';
-import 'package:intellicart/views/customer/main_screen.dart';
+import 'package:intellicart/views/vendor/main_screen.dart';
 
-class CustomerLoginScreen extends StatefulWidget {
-  const CustomerLoginScreen({super.key});
+class VendorLoginScreen extends StatefulWidget {
+  const VendorLoginScreen({super.key});
 
   @override
-  State<CustomerLoginScreen> createState() => _CustomerLoginScreenState();
+  State<VendorLoginScreen> createState() => _VendorLoginScreenState();
 }
 
-class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
+class _VendorLoginScreenState extends State<VendorLoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final CustomerAuthController _authController = CustomerAuthController();
+  final VendorAuthController _authController = VendorAuthController();
 
   late String email;
 
