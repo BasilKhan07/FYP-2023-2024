@@ -58,7 +58,7 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Login Customer' 's Account',
+              'Login Vendor''s Account',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
