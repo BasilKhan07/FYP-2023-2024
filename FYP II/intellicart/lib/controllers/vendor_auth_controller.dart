@@ -82,4 +82,8 @@ class VendorAuthController {
     }
     return res;
   }
+
+  Future signOut()  async{
+    _auth.signOut();
+}
 }

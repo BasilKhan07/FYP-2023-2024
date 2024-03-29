@@ -77,4 +77,9 @@ class CustomerAuthController {
     }
     return res;
   }
+
+  Future signOut()  async{
+    _auth.signOut();
+}
+
 }
