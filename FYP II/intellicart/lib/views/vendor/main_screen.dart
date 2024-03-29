@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/vendor_auth_controller.dart';
 import 'package:intellicart/views/vendor/nav_screens/categories_screen.dart';
@@ -20,12 +18,12 @@ class _MainScreenState extends State<MainScreen> {
 
   int _pageIndex = 0;
 
-  final List<Widget> _pages = const [
-    DashboardScreen(),
-    CategoriesScreen(),
+  final List<Widget> _pages = [
+    const DashboardScreen(),
+    const CategoriesScreen(),
     ProductsScreen(),
-    SalesScreen(),
-    UpdateScreen(),
+    const SalesScreen(),
+    const UpdateScreen(),
   ];
 
   _signout() {
@@ -33,35 +31,17 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.pop(context);
   }
 
-  Future<String> getUserInfo() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('vendors')
-          .doc(user.uid)
-          .get();
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      if (userDoc.exists) {
-        String fullName = userData['fullName'];
-        int indexOfSpace = fullName.indexOf(' ');
-        String username =
-            indexOfSpace != -1 ? fullName.substring(0, indexOfSpace) : fullName;
-        return username;
-      } else {
-        return 'Username not found';
-      }
-    } else {
-      return 'User not logged in';
-    }
-  }
+ Future<String> _getVendor() async {
+  return await _authController.getUserInfo();
+}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: FutureBuilder<String>(
-          future: getUserInfo(),
+          future: _getVendor(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text('Loading...');

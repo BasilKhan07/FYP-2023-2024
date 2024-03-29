@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/customer_auth_controller.dart';
 import 'package:intellicart/views/customer/nav_screens/favorites_screen.dart';
@@ -25,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     SearchScreen(),
     FeedbackScreen(),
     FavoritesScreen(),
-    ImagePredictionPage(),
+    QualityAssessmentScreen(),
   ];
 
   _signout() {
@@ -33,35 +31,17 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.pop(context);
   }
 
-  Future<String> getUserInfo() async {
-    User? user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('customers')
-          .doc(user.uid)
-          .get();
-      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
-      if (userDoc.exists) {
-        String fullName = userData['fullName'];
-        int indexOfSpace = fullName.indexOf(' ');
-        String username =
-            indexOfSpace != -1 ? fullName.substring(0, indexOfSpace) : fullName;
-        return username;
-      } else {
-        return 'Username not found';
-      }
-    } else {
-      return 'User not logged in';
-    }
+  Future<String> _getCustomer() async {
+    return await _authController.getUserInfo();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: FutureBuilder<String>(
-          future: getUserInfo(),
+          future: _getCustomer(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Text('Loading...');

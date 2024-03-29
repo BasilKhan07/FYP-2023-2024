@@ -10,6 +10,29 @@ class VendorAuthController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<String> getUserInfo() async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('vendors')
+          .doc(user.uid)
+          .get();
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      if (userDoc.exists) {
+        String fullName = userData['fullName'];
+        int indexOfSpace = fullName.indexOf(' ');
+        String username =
+            indexOfSpace != -1 ? fullName.substring(0, indexOfSpace) : fullName;
+        return username;
+      } else {
+        return 'Username not found';
+      }
+    } else {
+      return 'User not logged in';
+    }
+  }
+
   _uploadProfileImageToStorage(Uint8List? image) async {
     Reference ref =
         _storage.ref().child('vendorProfilePics').child(_auth.currentUser!.uid);
