@@ -14,9 +14,9 @@ class _SalesScreenState extends State<SalesScreen> {
   late TextEditingController _productNameController;
   late TextEditingController _quantityController;
   late String _selectedCategory = '';
-  late List<String> _categories = ['Fruit', 'Vegetable', ''];
-  late Map<String, double> _productPrices = {};
-  late DateTime _selectedDate = DateTime.now();
+  late final List<String> _categories = ['Fruit', 'Vegetable', ''];
+  late final Map<String, double> _productPrices = {};
+  late final DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -36,10 +36,10 @@ class _SalesScreenState extends State<SalesScreen> {
   Future<void> _loadProductPrices() async {
     final productsSnapshot =
         await FirebaseFirestore.instance.collectionGroup('products').get();
-    productsSnapshot.docs.forEach((productDoc) {
-      final data = productDoc.data() as Map<String, dynamic>;
+    for (var productDoc in productsSnapshot.docs) {
+      final data = productDoc.data();
       _productPrices[productDoc.id] = data['price'];
-    });
+    }
   }
 
   Future<void> _addSale() async {
@@ -83,13 +83,13 @@ class _SalesScreenState extends State<SalesScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Add Sale',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           TextField(
             controller: _productNameController,
-            decoration: InputDecoration(labelText: 'Product Name'),
+            decoration: const InputDecoration(labelText: 'Product Name'),
           ),
           DropdownButtonFormField<String>(
             value: _selectedCategory,
@@ -104,19 +104,19 @@ class _SalesScreenState extends State<SalesScreen> {
                 child: Text(value),
               );
             }).toList(),
-            decoration: InputDecoration(labelText: 'Category'),
+            decoration: const InputDecoration(labelText: 'Category'),
           ),
           TextField(
             controller: _quantityController,
-            decoration: InputDecoration(labelText: 'Quantity'),
+            decoration: const InputDecoration(labelText: 'Quantity'),
             keyboardType: TextInputType.number,
           ),
           ElevatedButton(
             onPressed: _addSale,
-            child: Text('Add Sale'),
+            child: const Text('Add Sale'),
           ),
-          SizedBox(height: 20),
-          Text(
+          const SizedBox(height: 20),
+          const Text(
             'Sales List',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -127,12 +127,12 @@ class _SalesScreenState extends State<SalesScreen> {
                   .doc('your_vendor_id_here')
                   .collection('sales')
                   .where('date',
-                      isGreaterThan: DateTime.now().subtract(Duration(days: 7)))
+                      isGreaterThan: DateTime.now().subtract(const Duration(days: 7)))
                   .orderBy('date', descending: true)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else {
                   final sales = snapshot.data!.docs;
                   return ListView.builder(
