@@ -2,19 +2,19 @@ import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intellicart/controllers/auth_controller.dart';
+import 'package:intellicart/controllers/customer_auth_controller.dart';
 import 'package:intellicart/utils/show_snackBar.dart';
 import 'package:intellicart/views/customer/auth/login_screen.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class CustomerRegisterScreen extends StatefulWidget {
+  const CustomerRegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<CustomerRegisterScreen> createState() => _CustomerRegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
-  final AuthController _authController = AuthController();
+class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
+  final CustomerAuthController _authController = CustomerAuthController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -42,6 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           setState(() {
             _formKey.currentState!.reset();
             _isLoading = false;
+            _image = null; 
           });
         },
       );
@@ -222,7 +223,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) {
-                              return const LoginScreen();
+                              return const CustomerLoginScreen();
                             },
                           ),
                         );
