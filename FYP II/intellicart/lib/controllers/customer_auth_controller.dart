@@ -10,10 +10,36 @@ class CustomerAuthController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
+  Future<String> getUserInfo() async {
+    User? user = _auth.currentUser;
+
+    if (user != null) {
+      DocumentSnapshot userDoc = await _firestore
+          .collection('customers')
+          .doc(user.uid)
+          .get();
+      Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
+      if (userDoc.exists) {
+        String fullName = userData['fullName'];
+        int indexOfSpace = fullName.indexOf(' ');
+        String username =
+            indexOfSpace != -1 ? fullName.substring(0, indexOfSpace) : fullName;
+        return username;
+      } else {
+        return 'Username not found';
+      }
+    } else {
+      return 'User not logged in';
+    }
+  }
+
   _uploadProfileImageToStorage(Uint8List? image) async {
-    Reference ref =
-        _storage.ref().child('customerProfilePics').child(_auth.currentUser!.uid);
-    UploadTask uploadTask = ref.putData(image!, SettableMetadata(contentType: 'image/jpeg'));
+    Reference ref = _storage
+        .ref()
+        .child('customerProfilePics')
+        .child(_auth.currentUser!.uid);
+    UploadTask uploadTask =
+        ref.putData(image!, SettableMetadata(contentType: 'image/jpeg'));
     TaskSnapshot snapshot = await uploadTask;
     String downloadUrl = await snapshot.ref.getDownloadURL();
     return downloadUrl;
@@ -78,8 +104,7 @@ class CustomerAuthController {
     return res;
   }
 
-  Future signOut()  async{
+  Future signOut() async {
     _auth.signOut();
-}
-
+  }
 }

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 Future<String> predictImage(File? image) async {
   String apiUrl =
-      'http://127.0.0.1:8000/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
+      'http://172.20.10.6:8000/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
   var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
   request.files.add(await http.MultipartFile.fromPath('image', image!.path));
   var streamedResponse = await request.send();
