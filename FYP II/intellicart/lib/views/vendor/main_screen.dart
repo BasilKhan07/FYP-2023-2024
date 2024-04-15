@@ -47,11 +47,8 @@ class _MainScreenState extends State<MainScreen> {
               return const Text('Loading...');
             } else {
               if (snapshot.hasError) {
-                print(snapshot.error);
-                print(snapshot.data);
                 return Text('Error: ${snapshot.error}');
               } else {
-                print(snapshot.data);
                 return Text('Welcome, ${snapshot.data}');
 
               }

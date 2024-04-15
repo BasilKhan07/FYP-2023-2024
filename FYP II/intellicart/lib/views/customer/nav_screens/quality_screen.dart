@@ -43,7 +43,6 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));
     var streamedResponse = await request.send();
-    print('AAA');
     var response = await http.Response.fromStream(streamedResponse);
 
     if (response.statusCode == 200) {

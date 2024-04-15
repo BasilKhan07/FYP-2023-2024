@@ -51,7 +51,7 @@ class CustomerAuthController {
     if (file != null) {
       return await file.readAsBytes();
     } else {
-      print('No Image is Selected');
+      return;
     }
   }
 
