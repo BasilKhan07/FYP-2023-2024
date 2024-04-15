@@ -53,7 +53,7 @@ class VendorProductController {
     }
   }
 
-   Future<String> deleteProduct(String name, String category) async {
+  Future<String> deleteProduct(String name, String category) async {
     try {
       final querySnapshot = await _firestore
           .collection('vendors')
@@ -75,4 +75,5 @@ class VendorProductController {
       return 'Error deleting product: $e';
     }
   }
+
 }

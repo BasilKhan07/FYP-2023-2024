@@ -1,4 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intellicart/controllers/vendor_location_controller.dart';
 import 'package:intellicart/controllers/vendor_product_controller.dart';
 import 'package:intellicart/utils/show_snackbar.dart';
 
@@ -13,6 +17,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
   final VendorProductController _vendorProductController =
       VendorProductController();
 
+  final VendorLocationController _vendorLocationController =
+      VendorLocationController();
+
   final TextEditingController _priceController = TextEditingController();
 
   final TextEditingController _nameController = TextEditingController();
@@ -24,6 +31,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   String? _selectedAction;
 
   bool _disablePriceTextField = false;
+
+  late LatLng _vendorLocation = const LatLng(0, 0);
 
   _performAction() async {
     setState(() {
@@ -111,6 +120,42 @@ class _UpdateScreenState extends State<UpdateScreen> {
     }
   }
 
+  Future<LatLng> _fetchVendorLocation() async {
+    LatLng location = await _vendorLocationController.getVendorLocation();
+    return location;
+  }
+
+  Future<void> _updateVendorLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {}
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      String res = await _vendorLocationController.updateVendorLocation(
+        position.latitude,
+        position.longitude,
+      );
+
+      setState(() {
+        _vendorLocation = LatLng(position.latitude, position.longitude);
+      });
+
+      if (res == 'success') {
+        if (context.mounted) {
+          showSnack(context, 'Location updated successfully');
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showSnack(context, e.toString());
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +215,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   labelText: 'Price for 1 Kg (Rs) or 1 Dozen',
                 ),
                 keyboardType: TextInputType.number,
-                enabled: !_disablePriceTextField, // Control enabled state
+                enabled: !_disablePriceTextField, 
               ),
               const SizedBox(height: 20.0),
               InkWell(
@@ -200,6 +245,44 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           ),
                   ),
                 ),
+              ),
+              const SizedBox(height: 20.0),
+              SizedBox(
+                height: 300,
+                width: 300,
+                child: FutureBuilder<LatLng>(
+                  future: _fetchVendorLocation(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const CircularProgressIndicator();
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      _vendorLocation = snapshot.data!;
+                      return GoogleMap(
+                        initialCameraPosition: CameraPosition(
+                          target: _vendorLocation,
+                          zoom: 12,
+                        ),
+                        markers: {
+                          Marker(
+                            markerId: const MarkerId('destinationLocation'),
+                            icon: BitmapDescriptor.defaultMarker,
+                            position: _vendorLocation,
+                            draggable: true,
+                          ),
+                        },
+                      );
+                    }
+                  },
+                ),
+              ),
+              const SizedBox(height: 20.0),
+              ElevatedButton(
+                onPressed: () {
+                  _updateVendorLocation();
+                },
+                child: const Text('Update Location'),
               ),
             ],
           ),

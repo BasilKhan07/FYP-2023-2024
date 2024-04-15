@@ -3,11 +3,12 @@ from keras.models import load_model
 import numpy as np
 from PIL import Image
 import io
+from datetime import datetime
 
 # To execute this API : uvicorn predict:app --reload --host 0.0.0.0 --port 8000
 # Loading CNN model
 try:
-    mobilenet_model = load_model('mobilenet_final_model.h5')    #only works with keras and tensorflow 2.15.0
+    mobilenet_model = load_model('mobilenet_FYP_model.h5')    #only works with keras and tensorflow 2.15.0
     print("model loaded.")
 except Exception as e:
     print("\n\n Error loading model: ", e)
@@ -53,5 +54,8 @@ async def predict(image: UploadFile = File(...)):
     # Make predictions using the model
     predicted_classes = predict_class(img_arr)
     
+    #To print time for logs
+    timestamp = datetime.now().strftime("%d %B %Y %H:%M:%S")
+    print(str(timestamp) + "  --------  " + str({"predictions": predicted_classes}))
     return {"predictions": predicted_classes}
 

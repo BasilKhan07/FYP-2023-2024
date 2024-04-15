@@ -66,7 +66,7 @@ class _SalesScreenState extends State<SalesScreen> {
   } else {
     // Handle the case when product price is not found
     // For example, show an error message or set a default price
-    print('Product price for $productName not found.');
+    // print('Product price for $productName not found.');
   }
 
     

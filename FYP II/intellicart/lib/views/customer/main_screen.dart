@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     SearchScreen(),
     const FeedbackScreen(),
     const FavoritesScreen(),
-    const QualityAssessmentScreen(),
+    const ImagePredictionPage(),
   ];
 
   _signout() {
