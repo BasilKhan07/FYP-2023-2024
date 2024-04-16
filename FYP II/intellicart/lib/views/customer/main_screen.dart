@@ -19,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
   int _pageIndex = 0;
 
   final List<Widget> _pages = [
-    const NearbyScreen(),
+    NearbyScreen(),
     SearchScreen(),
     const FeedbackScreen(),
     const FavoritesScreen(),
