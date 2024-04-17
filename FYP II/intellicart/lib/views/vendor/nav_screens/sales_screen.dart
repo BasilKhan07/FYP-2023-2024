@@ -66,57 +66,65 @@ class _SalesScreenState extends State<SalesScreen> {
   }
 
   Future<void> _addSale() async {
-    try {
-      // Get the current date
-      DateTime now = DateTime.now();
-      String formattedDate = '${now.year}-${now.month}-${now.day}';
+  try {
+    // Get the current date
+    DateTime now = DateTime.now();
+    String formattedDate = '${now.year}-${now.month}-${now.day}';
 
-      // Create a reference to the sales document for the current date
-      DocumentReference salesRef = FirebaseFirestore.instance
-          .collection('vendors')
-          .doc(_vendorId)
-          .collection('sales')
-          .doc(formattedDate);
+    // Create a reference to the sales document for the current date
+    DocumentReference salesRef = FirebaseFirestore.instance
+        .collection('vendors')
+        .doc(_vendorId)
+        .collection('sales')
+        .doc(formattedDate);
 
-      // Use a transaction to update the sales document atomically
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        DocumentSnapshot salesDoc = await transaction.get(salesRef);
+    // Use a transaction to update the sales document atomically
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot salesDoc = await transaction.get(salesRef);
 
-        // Calculate the total cost for the new sale
-        double productPrice = _products!
-            .firstWhere((product) => product.id == _selectedProductId)['price'];
-        double totalCost = _calculateTotalCost(productPrice);
+      // Calculate the total cost for the new sale
+      double productPrice = _products!
+          .firstWhere((product) => product.id == _selectedProductId)['price'];
+      double totalCost = _calculateTotalCost(productPrice);
 
-        // Update the sales data with the new sale
-        if (salesDoc.exists) {
-          // If the document already exists, update the existing data
-          Map<String, dynamic> data = salesDoc.data() as Map<String, dynamic>;
-          int currentQuantity = data[_selectedProductId]['quantity'] ?? 0;
-          data[_selectedProductId]['quantity'] = currentQuantity + _quantity;
-          data['totalCost'] = (data['totalCost'] ?? 0) + totalCost;
-          transaction.update(salesRef, data);
-        } else {
-          // If the document does not exist, create a new document
-          Map<String, dynamic> data = {
-            _selectedProductId: {'quantity': _quantity},
-            'totalCost': totalCost,
-          };
-          transaction.set(salesRef, data);
-        }
-      });
+      // Initialize or retrieve the sales data map
+      Map<String, dynamic> data = salesDoc.exists
+          ? salesDoc.data() as Map<String, dynamic>
+          : {};
 
-      // Show Snackbar with success message
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Sale recorded successfully.'),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    } catch (e) {
-      print('Error adding sale: $e');
-      // Handle error
-    }
+      // Update the sales data with the new sale
+      if (data.containsKey(_selectedProductId)) {
+        // If the product already exists in sales, update quantity and total cost
+        int currentQuantity = data[_selectedProductId]['quantity'] ?? 0;
+        double currentTotalCost = data[_selectedProductId]['totalCost'] ?? 0.0;
+
+        data[_selectedProductId]['quantity'] = currentQuantity + _quantity;
+        data[_selectedProductId]['totalCost'] = currentTotalCost + totalCost;
+      } else {
+        // If the product does not exist in sales, add new entry
+        data[_selectedProductId] = {
+          'quantity': _quantity,
+          'totalCost': totalCost,
+        };
+      }
+
+      // Update the sales data in Firestore
+      transaction.set(salesRef, data);
+    });
+
+    // Show Snackbar with success message
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Sale recorded successfully.'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  } catch (e) {
+    print('Error adding sale: $e');
+    // Handle error
   }
+}
+
 
   Future<void> _fetchSalesByDate(DateTime selectedDate) async {
   try {
