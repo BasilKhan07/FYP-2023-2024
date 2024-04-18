@@ -1,0 +1,1 @@
+GeoPoint? vendorLocation = vendor['location'];
