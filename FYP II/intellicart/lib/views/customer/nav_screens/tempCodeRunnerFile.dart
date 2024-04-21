@@ -1,1 +1,1 @@
-GeoPoint? vendorLocation = vendor['location'];
+// GeoPoint? vendorLocation = vendor['location'];
