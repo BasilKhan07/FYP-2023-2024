@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
     const DashboardScreen(),
     const CategoriesScreen(),
     ProductsScreen(),
-    SalesScreen(),
+    const SalesScreen(),
     const UpdateScreen(),
   ];
 

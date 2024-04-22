@@ -38,7 +38,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
   Future predictImage() async {
     if (_image == null) return;
 
-    String apiUrl = 'http://192.168.0.106:8001/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
+    String apiUrl = 'http://172.20.10.5:8000/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
     // wifi on phone and laptop should be same 
     var request = http.MultipartRequest('POST', Uri.parse(apiUrl));
     request.files.add(await http.MultipartFile.fromPath('image', _image!.path));

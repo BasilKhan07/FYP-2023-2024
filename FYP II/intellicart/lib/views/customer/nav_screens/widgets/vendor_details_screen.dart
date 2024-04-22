@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class VendorDetailsScreen extends StatelessWidget {
+class VendorDetailsScreen extends StatefulWidget {
   final String vendorId;
   final String fullName;
   final GeoPoint? location;
@@ -15,10 +16,56 @@ class VendorDetailsScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _VendorDetailsScreenState createState() => _VendorDetailsScreenState();
+}
+
+class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    checkFavorite();
+  }
+
+  void checkFavorite() async {
+    try {
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        String customerId = user.uid;
+        DocumentSnapshot customerSnapshot =
+            await FirebaseFirestore.instance.collection('customers').doc(customerId).get();
+
+        List<dynamic> favorites = customerSnapshot.get('favorites') ?? [];
+
+        setState(() {
+          isFavorite = favorites.any((favorite) => favorite['vendorId'] == widget.vendorId);
+        });
+      }
+    } catch (error) {
+      print('Error checking favorite: $error');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(fullName),
+        title: Text(widget.fullName),
+        actions: [
+          IconButton(
+            icon: Icon(
+              isFavorite ? Icons.favorite : Icons.favorite_border,
+              color: isFavorite ? Colors.red : null,
+            ),
+            onPressed: () {
+              setState(() {
+                isFavorite = !isFavorite;
+              });
+              toggleFavorite();
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -34,20 +81,17 @@ class VendorDetailsScreen extends StatelessWidget {
               child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('vendors')
-                    .doc(vendorId)
+                    .doc(widget.vendorId)
                     .collection('products')
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Center(child: CircularProgressIndicator());
                   }
-
                   if (snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   }
-
                   final products = snapshot.data!.docs;
-
                   return ListView.builder(
                     itemCount: products.length,
                     itemBuilder: (context, index) {
@@ -55,7 +99,6 @@ class VendorDetailsScreen extends StatelessWidget {
                       String productName = product['name'];
                       String category = product['category'];
                       double price = product['price'];
-
                       return Card(
                         margin: const EdgeInsets.symmetric(vertical: 8.0),
                         child: ListTile(
@@ -80,14 +123,14 @@ class VendorDetailsScreen extends StatelessWidget {
               height: 300,
               child: GoogleMap(
                 initialCameraPosition: CameraPosition(
-                  target: LatLng(location!.latitude, location!.longitude),
+                  target: LatLng(widget.location!.latitude, widget.location!.longitude),
                   zoom: 12,
                 ),
                 markers: {
                   Marker(
                     markerId: const MarkerId('destinationLocation'),
                     icon: BitmapDescriptor.defaultMarker,
-                    position: LatLng(location!.latitude, location!.longitude),
+                    position: LatLng(widget.location!.latitude, widget.location!.longitude),
                   ),
                 },
               ),
@@ -97,4 +140,39 @@ class VendorDetailsScreen extends StatelessWidget {
       ),
     );
   }
+
+ void toggleFavorite() async {
+  try {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      String customerId = user.uid;
+      DocumentSnapshot customerSnapshot = await FirebaseFirestore.instance.collection('customers').doc(customerId).get();
+
+      List<dynamic> favorites = customerSnapshot.get('favorites') ?? [];
+      bool alreadyFavorite = favorites.any((favorite) => favorite['vendorId'] == widget.vendorId);
+
+      if (alreadyFavorite) {
+        await FirebaseFirestore.instance.collection('customers').doc(customerId).update({
+          'favorites': favorites.where((favorite) => favorite['vendorId'] != widget.vendorId).toList(),
+        });
+      } else {
+        favorites.add({
+          'vendorId': widget.vendorId,
+          'fullName': widget.fullName,
+          'location': widget.location,
+        });
+        await FirebaseFirestore.instance.collection('customers').doc(customerId).update({
+          'favorites': favorites,
+        });
+      }
+
+      setState(() {
+        isFavorite = !alreadyFavorite;
+      });
+    }
+  } catch (error) {
+    print('Failed to toggle favorite: $error');
+  }
+}
+
 }
