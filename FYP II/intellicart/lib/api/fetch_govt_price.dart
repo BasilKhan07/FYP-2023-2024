@@ -55,12 +55,12 @@ class PriceFetcher {
     // Get current date
     print('In fetch file');
     DateTime currentDate = DateTime.now();
-    //String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    String formatteddate = "2024-04-18"; //temporarily set old date
+    String formatteddate = DateFormat('yyyy-MM-dd').format(currentDate);
+    //String formatteddate = "2024-04-22"; //temporarily set old date
     print(formatteddate);
     
     try{
-      final response = await http.get(Uri.parse('http://172.20.10.5:8001/$formatteddate'));
+      final response = await http.get(Uri.parse('http://192.168.0.8:8001/$formatteddate'));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> prices = json.decode(response.body);

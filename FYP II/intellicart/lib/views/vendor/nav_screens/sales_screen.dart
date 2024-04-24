@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class SalesScreen extends StatefulWidget {
   const SalesScreen({Key? key}) : super(key: key);
@@ -68,8 +69,7 @@ class _SalesScreenState extends State<SalesScreen> {
   Future<void> _addSale() async {
   try {
     // Get the current date
-    DateTime now = DateTime.now();
-    String formattedDate = '${now.year}-${now.month}-${now.day}';
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     // Create a reference to the sales document for the current date
     DocumentReference salesRef = FirebaseFirestore.instance
@@ -128,8 +128,7 @@ class _SalesScreenState extends State<SalesScreen> {
 
   Future<void> _fetchSalesByDate(DateTime selectedDate) async {
   try {
-    String formattedDate =
-        '${selectedDate.year}-${selectedDate.month}-${selectedDate.day}';
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     DocumentSnapshot salesDoc = await FirebaseFirestore.instance
         .collection('vendors')
         .doc(_vendorId)
