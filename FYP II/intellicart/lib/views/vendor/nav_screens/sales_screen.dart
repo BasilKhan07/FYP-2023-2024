@@ -15,6 +15,7 @@ class _SalesScreenState extends State<SalesScreen> {
   List<DocumentSnapshot>? _products;
   String _selectedProductId = '';
   int _quantity = 1;
+  late String counter;
   DateTime _selectedDate = DateTime.now();
 
   @override
@@ -80,36 +81,70 @@ class _SalesScreenState extends State<SalesScreen> {
 
     // Use a transaction to update the sales document atomically
     await FirebaseFirestore.instance.runTransaction((transaction) async {
-      DocumentSnapshot salesDoc = await transaction.get(salesRef);
 
       // Calculate the total cost for the new sale
       double productPrice = _products!
           .firstWhere((product) => product.id == _selectedProductId)['price'];
       double totalCost = _calculateTotalCost(productPrice);
 
+      String productName = _products!
+      .firstWhere((product) => product.id == _selectedProductId)['name'];
+
       // Initialize or retrieve the sales data map
-      Map<String, dynamic> data = salesDoc.exists
-          ? salesDoc.data() as Map<String, dynamic>
-          : {};
+      //Map<String, dynamic> data = salesDoc.exists
+      //    ? salesDoc.data() as Map<String, dynamic>
+      //    : {};
+      DocumentSnapshot salesDoc = await transaction.get(salesRef);
+
+      if (salesDoc.exists) {
+      // Get the data map from the document snapshot
+      Map<String, dynamic> data = salesDoc.data() as Map<String, dynamic>;
+
+      // Check if the document has any fields
+        if (data.isNotEmpty) {
+          // Get the keys (field names) of the data map
+          List<String> keys = data.keys.toList();
+
+          // Get the last field name
+          String lastSaleCounter = keys.last;
+
+          setState(() {
+            int temp = int.parse(lastSaleCounter) + 1;
+            counter = temp.toString();
+          });
+
+        }
+        } else {
+          setState(() {
+            counter = '1';
+          });
+        }
 
       // Update the sales data with the new sale
-      if (data.containsKey(_selectedProductId)) {
-        // If the product already exists in sales, update quantity and total cost
-        int currentQuantity = data[_selectedProductId]['quantity'] ?? 0;
-        double currentTotalCost = data[_selectedProductId]['totalCost'] ?? 0.0;
+      // if (data.containsKey(_selectedProductId)) {
+      //   // If the product already exists in sales, update quantity and total cost
+      //   int currentQuantity = data[_selectedProductId]['quantity'] ?? 0;
+      //   double currentTotalCost = data[_selectedProductId]['totalCost'] ?? 0.0;
 
-        data[_selectedProductId]['quantity'] = currentQuantity + _quantity;
-        data[_selectedProductId]['totalCost'] = currentTotalCost + totalCost;
-      } else {
-        // If the product does not exist in sales, add new entry
-        data[_selectedProductId] = {
-          'quantity': _quantity,
-          'totalCost': totalCost,
-        };
-      }
+      //   data[_selectedProductId]['quantity'] = currentQuantity + _quantity;
+      //   data[_selectedProductId]['totalCost'] = currentTotalCost + totalCost;
+      // } else {
+      //   // If the product does not exist in sales, add new entry
+      //   data[_selectedProductId] = {
+      //     'quantity': _quantity,
+      //     'totalCost': totalCost,
+      //   };
+      // }
+
+      Map<String, dynamic> data = { counter : {
+        'productName' : productName,
+        'quantity' : _quantity,
+        'totalCost' : totalCost }
+      };
+
 
       // Update the sales data in Firestore
-      transaction.set(salesRef, data);
+      transaction.set(salesRef, data, SetOptions(merge: true));
     });
 
     // Show Snackbar with success message

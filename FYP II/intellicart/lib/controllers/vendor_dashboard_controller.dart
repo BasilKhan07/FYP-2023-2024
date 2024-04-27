@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+
 
 class VendorDashboardController {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user = FirebaseAuth.instance.currentUser; //user.uid
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<List<dynamic>> getNoOfCategories_getNoOfFruitsandVeg() async {
+  // ignore: non_constant_identifier_names
+  Stream<List<dynamic>> getNoOfCategories_getNoOfFruitsandVeg() async* {
     List output = [];
     late int noOfCategories;
     Map categories = {};
     final user = this.user;
     if (user != null) {
-      QuerySnapshot vendorProducts = await FirebaseFirestore.instance
+      QuerySnapshot vendorProducts = await _firestore
           .collection('vendors')
           .doc(user.uid)
           .collection('products')
@@ -33,50 +35,36 @@ class VendorDashboardController {
       noOfCategories = categories.length;
       output.add(noOfCategories);
       output.add(categories['Fruit'] ?? 0);
-      output.add(categories['Vegetables'] ?? 0);
+      output.add(categories['Vegetable'] ?? 0);
 
-      return output;
+      yield output;
   }
 
-  // double _calculateTotalCost(double price) {
-  //   return price * _quantity;
-  // }
+  Stream<double> getTodayTotalSale() async* {
+    double todayTotalSale = 0;
+    String formattedTodaysDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    DocumentReference salesRef = _firestore
+        .collection('vendors')
+        .doc(user!.uid)
+        .collection('sales')
+        .doc(formattedTodaysDate);
 
+        DocumentSnapshot todaySaleDoc = await salesRef.get();
+        // Check if the document exists and has data
+        if (todaySaleDoc.exists) {
+          // Get the data map from the document snapshot
+          Map<String, dynamic> data = todaySaleDoc.data() as Map<String, dynamic>;
 
+          // Iterate over the keys of the data map
+          for (String key in data.keys) {
+            // Access each field value using the key
+            double eachPrice = data[key]['totalCost'];
+            todayTotalSale = todayTotalSale + eachPrice;
+          }
+        } else {
+          print('Document does not exist.');
+        }
 
-//   Future<void> _fetchSalesByDate(DateTime selectedDate) async {
-//   try {
-//     String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-//     DocumentSnapshot salesDoc = await FirebaseFirestore.instance
-//         .collection('vendors')
-//         .doc(_vendorId)
-//         .collection('sales')
-//         .doc(formattedDate)
-//         .get();
-
-//     if (salesDoc.exists) {
-//       Map<String, dynamic> salesData = salesDoc.data() as Map<String, dynamic>;
-
-//       // Display total cost for the selected date
-//       double totalCost = salesData['totalCost'] ?? 0.0;
-//       print('Total Cost for $_selectedDate: $totalCost');
-
-//       // Display products sold with their quantities
-//       salesData.forEach((productId, productData) {
-//         if (productId != 'totalCost' && productId != 'date') {
-//           String productName = _products!
-//               .firstWhere((product) => product.id == productId)['name'];
-//           int quantity = productData as int; // Get the quantity directly
-//           print('$productName: $quantity');
-//         }
-//       });
-//     } else {
-//       print('No sales recorded for $_selectedDate');
-//     }
-//   } catch (e) {
-//     print('Error fetching sales: $e');
-//     // Handle error
-//   }
-// }
-
+        yield todayTotalSale;
+  }
 }
