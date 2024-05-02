@@ -3,13 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intellicart/views/customer/nav_screens/widgets/vendor_details_screen.dart';
 
+// Import necessary packages
+
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('customers')
@@ -18,7 +19,7 @@ class FeedbackScreen extends StatelessWidget {
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -35,10 +36,10 @@ class FeedbackScreen extends StatelessWidget {
                 future: FirebaseFirestore.instance.collection('vendors').doc(vendorId).get(),
                 builder: (context, vendorSnapshot) {
                   if (vendorSnapshot.connectionState == ConnectionState.waiting) {
-                    return SizedBox(); // Return an empty container while waiting for the vendor data
+                    return const SizedBox(); // Return an empty container while waiting for the vendor data
                   }
                   if (vendorSnapshot.hasError) {
-                    return SizedBox(); // Return an empty container if there's an error
+                    return const SizedBox(); // Return an empty container if there's an error
                   }
                   String vendorName = vendorSnapshot.data!['fullName'];
                   // Display vendor details and rating
@@ -60,8 +61,8 @@ class FeedbackScreen extends StatelessWidget {
                       background: Container(
                         color: Colors.red,
                         alignment: Alignment.centerRight,
-                        padding: EdgeInsets.only(right: 16),
-                        child: Icon(Icons.delete, color: Colors.white),
+                        padding: const EdgeInsets.only(right: 16),
+                        child: const Icon(Icons.delete, color: Colors.white),
                       ),
                       confirmDismiss: (direction) async {
                         if (direction == DismissDirection.endToStart) {
@@ -70,20 +71,20 @@ class FeedbackScreen extends StatelessWidget {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text('Confirm Delete'),
-                                content: Text('Are you sure you want to delete this rating?'),
+                                title: const Text('Confirm Delete'),
+                                content: const Text('Are you sure you want to delete this rating?'),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop(false); // Dismiss the dialog without deleting
                                     },
-                                    child: Text('Cancel'),
+                                    child: const Text('Cancel'),
                                   ),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop(true); // Dismiss the dialog and delete
                                     },
-                                    child: Text('Delete'),
+                                    child: const Text('Delete'),
                                   ),
                                 ],
                               );
@@ -100,7 +101,20 @@ class FeedbackScreen extends StatelessWidget {
                               .doc(FirebaseAuth.instance.currentUser!.uid)
                               .collection('feedback')
                               .doc(feedback.id)
-                              .delete();
+                              .delete()
+                              .then((value) {
+                            // Delete feedback from vendor's collection
+                            FirebaseFirestore.instance
+                                .collection('vendors')
+                                .doc(vendorId)
+                                .collection('feedback')
+                                .doc(feedback.id)
+                                .delete()
+                                .then((value) {
+                              // After deleting the feedback, recalculate the average rating
+                              _recalculateAverageRating(vendorId);
+                            });
+                          });
                         }
                       },
                       child: Column(
@@ -112,7 +126,7 @@ class FeedbackScreen extends StatelessWidget {
                               subtitle: Text('Rating: $rating'),
                             ),
                           ),
-                          SizedBox(height: 8), // Add white gap between each rating
+                          const SizedBox(height: 8), // Add white gap between each rating
                         ],
                       ),
                     ),
@@ -124,5 +138,33 @@ class FeedbackScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _recalculateAverageRating(String vendorId) async {
+    try {
+      QuerySnapshot feedbackSnapshot = await FirebaseFirestore.instance.collection('vendors').doc(vendorId).collection('feedback').get();
+      int totalRating = 0;
+      int numberOfFeedbacks = feedbackSnapshot.docs.length;
+
+      if (numberOfFeedbacks > 0) {
+        for (QueryDocumentSnapshot feedbackDoc in feedbackSnapshot.docs) {
+          int rating = feedbackDoc['rating'] as int;
+          totalRating += rating;
+        }
+
+        double averageRating = totalRating / numberOfFeedbacks;
+
+        await FirebaseFirestore.instance.collection('vendors').doc(vendorId).update({
+          'averageRating': averageRating,
+        });
+      } else {
+        // If there are no feedbacks, set averageRating to 0.0
+        await FirebaseFirestore.instance.collection('vendors').doc(vendorId).update({
+          'averageRating': 0.0,
+        });
+      }
+    } catch (error) {
+      print('Failed to recalculate average rating: $error');
+    }
   }
 }
