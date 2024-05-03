@@ -93,30 +93,33 @@ class FeedbackScreen extends StatelessWidget {
                         }
                         return false;
                       },
-                      onDismissed: (direction) {
-                        if (direction == DismissDirection.endToStart) {
-                          // Delete rating from database
-                          FirebaseFirestore.instance
-                              .collection('customers')
-                              .doc(FirebaseAuth.instance.currentUser!.uid)
-                              .collection('feedback')
-                              .doc(feedback.id)
-                              .delete()
-                              .then((value) {
-                            // Delete feedback from vendor's collection
-                            FirebaseFirestore.instance
-                                .collection('vendors')
-                                .doc(vendorId)
-                                .collection('feedback')
-                                .doc(feedback.id)
-                                .delete()
-                                .then((value) {
-                              // After deleting the feedback, recalculate the average rating
-                              _recalculateAverageRating(vendorId);
-                            });
-                          });
-                        }
-                      },
+                      onDismissed: (direction) async {
+  if (direction == DismissDirection.endToStart) {
+    try {
+      // Delete rating from customer's collection
+      await FirebaseFirestore.instance
+          .collection('customers')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('feedback')
+          .doc(feedback.id)
+          .delete();
+
+      // Delete feedback from vendor's collection
+      await FirebaseFirestore.instance
+          .collection('vendors')
+          .doc(vendorId)
+          .collection('feedback')
+          .doc(FirebaseAuth.instance.currentUser!.uid) // Assuming 'customerId' is the field storing the customer's ID in the vendor's collection
+          .delete();
+
+      // After deleting the feedback, recalculate the average rating
+      _recalculateAverageRating(vendorId);
+    } catch (error) {
+      print('Failed to delete feedback: $error');
+    }
+  }
+},
+
                       child: Column(
                         children: [
                           Container(
