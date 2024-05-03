@@ -32,15 +32,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
   }
 
-  Stream<double> getTotalSale() async* {
-    await for (double data in VDController.getTodayTotalSale()) {
+  //Not Used, as controller itself is sending its value in getData function
+  Stream<List<dynamic>> getTotalSale() async* {
+    await for (List<dynamic> data in VDController.getTodayTotalSale()) {
       yield data;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    List<String> headers = ['No of Categories', 'No of Fruits', 'No of Vegetables'];
+    List<String> headers = ['No of Categories', 'No of Fruits', 'No of Vegetables', 'Today\'s Sales (Rs)' , 'Total no. of Customers today'];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.lightGreenAccent,
@@ -106,6 +107,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemCount: snapshot.data!.length,
                   itemBuilder: (context, index) {
                     final dynamic value = snapshot.data![index];
+                    print('$index Value is : $value');
                     final String header = headers[index % headers.length]; // Get header using index
                           
                     // return Column(

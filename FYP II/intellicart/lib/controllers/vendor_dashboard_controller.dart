@@ -32,15 +32,24 @@ class VendorDashboardController {
         //print('Category: $category');
       }
     }
+      //Collecting data for output
       noOfCategories = categories.length;
       output.add(noOfCategories);
       output.add(categories['Fruit'] ?? 0);
       output.add(categories['Vegetable'] ?? 0);
-
+      // Get today's total sale
+      await for (List<dynamic> todayTotalSaleAndCust in getTodayTotalSale()) {
+        // Update the variable with the new value emitted from the stream
+        output.add(todayTotalSaleAndCust[0]);
+        output.add(todayTotalSaleAndCust[1]);
+        //print('Today\'s total sale: $todayTotalSale');
+      }
+      print(output);
       yield output;
   }
 
-  Stream<double> getTodayTotalSale() async* {
+  Stream<List> getTodayTotalSale() async* {
+    List<dynamic> returnList = [0,0];
     double todayTotalSale = 0;
     String formattedTodaysDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     DocumentReference salesRef = _firestore
@@ -54,6 +63,7 @@ class VendorDashboardController {
         if (todaySaleDoc.exists) {
           // Get the data map from the document snapshot
           Map<String, dynamic> data = todaySaleDoc.data() as Map<String, dynamic>;
+          int totalFields = data.length;
 
           // Iterate over the keys of the data map
           for (String key in data.keys) {
@@ -61,10 +71,11 @@ class VendorDashboardController {
             double eachPrice = data[key]['totalCost'];
             todayTotalSale = todayTotalSale + eachPrice;
           }
+          returnList = [todayTotalSale, totalFields];
         } else {
           print('Document does not exist.');
         }
 
-        yield todayTotalSale;
+        yield returnList;
   }
 }
