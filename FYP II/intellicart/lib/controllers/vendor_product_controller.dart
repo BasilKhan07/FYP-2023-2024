@@ -76,4 +76,23 @@ class VendorProductController {
     }
   }
 
+  Future<List<String>> getProductNames() async {
+  List<String> productNames = [];
+  try {
+    QuerySnapshot productSnapshot = await _firestore
+        .collection('vendors')
+        .doc(_auth.currentUser!.uid)
+        .collection('products')
+        .get();
+    
+    productSnapshot.docs.forEach((productDoc) {
+      String productName = productDoc['name'];
+      productNames.add(productName);
+    });
+
+    return productNames;
+  } catch (e) {
+    return []; 
+  }
+}
 }

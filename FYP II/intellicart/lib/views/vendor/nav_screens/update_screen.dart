@@ -26,6 +26,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   String? _selectedCategory;
 
+  String? _selectedProductName;
+
   bool _isLoading = false;
 
   String? _selectedAction;
@@ -33,6 +35,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   bool _disablePriceTextField = false;
 
   late LatLng _vendorLocation = const LatLng(0, 0);
+
+  List<String> _productNames = [];
 
   _performAction() async {
     setState(() {
@@ -77,7 +81,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   Future<void> _updateProduct() async {
     String res = await _vendorProductController.updateProduct(
-      _nameController.text,
+      _selectedProductName!,
       _selectedCategory!,
       _priceController.text,
     );
@@ -100,7 +104,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   Future<void> _deleteProduct() async {
     String res = await _vendorProductController.deleteProduct(
-      _nameController.text,
+      _selectedProductName!,
       _selectedCategory!,
     );
     try {
@@ -156,6 +160,26 @@ class _UpdateScreenState extends State<UpdateScreen> {
     }
   }
 
+  Future<void> _fetchProductNames() async {
+    try {
+      List<String> productNames =
+          await _vendorProductController.getProductNames();
+      setState(() {
+        _productNames = productNames;
+      });
+    } catch (e) {
+      if (context.mounted) {
+        showSnack(context, e.toString());
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchProductNames();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +194,6 @@ class _UpdateScreenState extends State<UpdateScreen> {
                 onChanged: (String? value) {
                   setState(() {
                     _selectedAction = value;
-                    // Disable price TextField when "Delete" is selected
                     _disablePriceTextField = value == 'Delete';
                   });
                 },
@@ -184,13 +207,33 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   labelText: 'Action',
                 ),
               ),
-              const SizedBox(height: 20.0),
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
+              const SizedBox(height: 10.0),
+              if (_selectedAction != "Add")
+                DropdownButtonFormField<String>(
+                  value: _selectedProductName,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedProductName = value;
+                    });
+                  },
+                  items: _productNames.map((String productName) {
+                    return DropdownMenuItem<String>(
+                      value: productName,
+                      child: Text(productName),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Selling Product Name',
+                    enabled: !_isLoading,
+                  ),
                 ),
-              ),
+              if(_selectedAction == "Add")
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'New Product Name',
+                  ),
+                ),
               const SizedBox(height: 20.0),
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
@@ -215,7 +258,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   labelText: 'Price for 1 Kg (Rs) or 1 Dozen',
                 ),
                 keyboardType: TextInputType.number,
-                enabled: !_disablePriceTextField, 
+                enabled: !_disablePriceTextField,
               ),
               const SizedBox(height: 20.0),
               InkWell(
