@@ -1,13 +1,13 @@
 
 import 'package:flutter/material.dart';
 
-class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+class ScanScreen extends StatelessWidget {
+  const ScanScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Categories Screen'),
+      child: Text('Scan Rehri Screen'),
     );
   }
 }

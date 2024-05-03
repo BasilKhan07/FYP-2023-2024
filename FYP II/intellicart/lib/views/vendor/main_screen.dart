@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/vendor_auth_controller.dart';
-import 'package:intellicart/views/vendor/nav_screens/categories_screen.dart';
+import 'package:intellicart/views/vendor/nav_screens/scan_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/dashboard_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/product_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/sales_screen.dart';
@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     const DashboardScreen(),
-    const CategoriesScreen(),
+    const ScanScreen(),
     ProductsScreen(),
     const SalesScreen(),
     const UpdateScreen(),
@@ -88,12 +88,12 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Dashboard',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.category),
-            label: 'Categories',
+            icon: Icon(Icons.camera),
+            label: 'Scan',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: 'Products',
+            label: 'My Products',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.history),

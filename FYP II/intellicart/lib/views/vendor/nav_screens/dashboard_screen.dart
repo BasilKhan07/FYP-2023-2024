@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:intl/intl.dart';
 import "package:intellicart/controllers/vendor_dashboard_controller.dart";
 
 class DashboardScreen extends StatefulWidget {
@@ -13,12 +11,9 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final VendorDashboardController VDController = VendorDashboardController();
-  late String _vendorId;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? user;  //user.uid
-  List<DocumentSnapshot>? _products;
-  int _quantity = 1;
-  DateTime _selectedDate = DateTime.now();
+
 
   @override
   void initState() {

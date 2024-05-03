@@ -44,7 +44,7 @@ class VendorDashboardController {
         output.add(todayTotalSaleAndCust[1]);
         //print('Today\'s total sale: $todayTotalSale');
       }
-      print(output);
+      //print(output);
       yield output;
   }
 
@@ -73,7 +73,7 @@ class VendorDashboardController {
           }
           returnList = [todayTotalSale, totalFields];
         } else {
-          print('Document does not exist.');
+          print('Sales does not exist for this date');
         }
 
         yield returnList;
