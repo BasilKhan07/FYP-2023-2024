@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intellicart/views/customer/auth/register_screen.dart';
-import 'package:intellicart/views/vendor/auth/register_screen.dart';
+import 'package:intellicart/views/customer/auth/login_screen.dart';
+import 'package:intellicart/views/vendor/auth/login_screen.dart';
 
 class UserTypeSelectionScreen extends StatelessWidget {
   const UserTypeSelectionScreen({super.key});
@@ -35,7 +35,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const CustomerRegisterScreen(),
+                    builder: (_) => const CustomerLoginScreen(),
                   ),
                 );
               },
@@ -47,7 +47,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const VendorRegisterScreen(),
+                    builder: (_) => const VendorLoginScreen(),
                   ),
                 );
               },

@@ -20,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = [
     const DashboardScreen(),
-    const ScanScreen(),
+    ScanScreen(),
     ProductsScreen(),
     const SalesScreen(),
     const UpdateScreen(),
@@ -78,6 +78,10 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (value) {
           setState(() {
             _pageIndex = value;
+            if(_pageIndex == 1){
+              _handleScanPageCalled();
+            }
+
           });
         },
         unselectedItemColor: Colors.black,
@@ -108,4 +112,12 @@ class _MainScreenState extends State<MainScreen> {
       body: _pages[_pageIndex],
     );
   }
+
+
+   // Function to be called when the Scan page is called
+  void _handleScanPageCalled() {
+    // Call your function or perform your desired action here
+    print('Scan page is called!');
+  }
+
 }
