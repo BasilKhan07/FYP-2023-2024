@@ -7,7 +7,7 @@ import 'package:intellicart/controllers/vendor_product_controller.dart';
 import 'package:intellicart/utils/show_snackbar.dart';
 
 class UpdateScreen extends StatefulWidget {
-  const UpdateScreen({super.key});
+  const UpdateScreen({Key? key}) : super(key: key);
 
   @override
   State<UpdateScreen> createState() => _UpdateScreenState();
@@ -74,7 +74,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
       }
     } catch (e) {
       if (context.mounted) {
-        showSnack(context, e.toString());
+          showSnack(context, e.toString());
       }
     }
   }
@@ -183,151 +183,207 @@ class _UpdateScreenState extends State<UpdateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DropdownButtonFormField<String>(
-                value: _selectedAction,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedAction = value;
-                    _disablePriceTextField = value == 'Delete';
-                  });
-                },
-                items: ['Add', 'Update', 'Delete'].map((String action) {
-                  return DropdownMenuItem<String>(
-                    value: action,
-                    child: Text(action),
-                  );
-                }).toList(),
-                decoration: const InputDecoration(
-                  labelText: 'Action',
-                ),
-              ),
-              const SizedBox(height: 10.0),
-              if (_selectedAction != "Add")
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8),
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
                 DropdownButtonFormField<String>(
-                  value: _selectedProductName,
+                  value: _selectedAction,
                   onChanged: (String? value) {
                     setState(() {
-                      _selectedProductName = value;
+                      _selectedAction = value;
+                      _disablePriceTextField = value == 'Delete';
                     });
                   },
-                  items: _productNames.map((String productName) {
+                  items: ['Add', 'Update', 'Delete'].map((String action) {
                     return DropdownMenuItem<String>(
-                      value: productName,
-                      child: Text(productName),
+                      value: action,
+                      child: Text(
+                        action,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     );
                   }).toList(),
                   decoration: InputDecoration(
-                    labelText: 'Selling Product Name',
-                    enabled: !_isLoading,
+                    labelText: 'Action',
+                    labelStyle: TextStyle(color: Colors.white),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                    ),
                   ),
+                  style: TextStyle(color: Colors.white), // Text color for dropdown items
+  dropdownColor: Color.fromARGB(255, 13, 26, 14), 
                 ),
-              if(_selectedAction == "Add")
-                TextField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'New Product Name',
-                  ),
-                ),
-              const SizedBox(height: 20.0),
-              DropdownButtonFormField<String>(
-                value: _selectedCategory,
-                onChanged: (String? value) {
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
-                items: ['Fruit', 'Vegetable'].map((String category) {
-                  return DropdownMenuItem<String>(
-                    value: category,
-                    child: Text(category),
-                  );
-                }).toList(),
-                decoration: const InputDecoration(
-                  labelText: 'Category',
-                ),
-              ),
-              TextField(
-                controller: _priceController,
-                decoration: const InputDecoration(
-                  labelText: 'Price for 1 Kg (Rs) or 1 Dozen',
-                ),
-                keyboardType: TextInputType.number,
-                enabled: !_disablePriceTextField,
-              ),
-              const SizedBox(height: 20.0),
-              InkWell(
-                onTap: () {
-                  _performAction();
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width - 40,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.lightGreenAccent,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: _isLoading
-                        ? const CircularProgressIndicator(
-                            color: Colors.white,
-                          )
-                        : const Text(
-                            'Perform Action',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: 5,
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              SizedBox(
-                height: 300,
-                width: 300,
-                child: FutureBuilder<LatLng>(
-                  future: _fetchVendorLocation(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const CircularProgressIndicator();
-                    } else if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
-                    } else {
-                      _vendorLocation = snapshot.data!;
-                      return GoogleMap(
-                        initialCameraPosition: CameraPosition(
-                          target: _vendorLocation,
-                          zoom: 12,
+                SizedBox(height: 10.0),
+                if (_selectedAction != "Add")
+                  DropdownButtonFormField<String>(
+                    value: _selectedProductName,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedProductName = value;
+                      });
+                    },
+                    items: _productNames.map((String productName) {
+                      return DropdownMenuItem<String>(
+                        value: productName,
+                        child: Text(
+                          productName,
+                          style: TextStyle(color: Colors.white),
                         ),
-                        markers: {
-                          Marker(
-                            markerId: const MarkerId('destinationLocation'),
-                            icon: BitmapDescriptor.defaultMarker,
-                            position: _vendorLocation,
-                            draggable: true,
-                          ),
-                        },
+                        
                       );
-                    }
+                    }).toList(),
+                    decoration: InputDecoration(
+                      labelText: 'Selling Product Name',
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                      ),
+                    ),
+                    style: TextStyle(color: Colors.white), // Text color for dropdown items
+  dropdownColor: Color.fromARGB(255, 13, 26, 14), 
+                  ),
+                if(_selectedAction == "Add")
+                  TextField(
+                    controller: _nameController,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      labelText: 'New Product Name',
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                      ),
+                    ),
+                  ),
+                SizedBox(height: 20.0),
+                DropdownButtonFormField<String>(
+                  value: _selectedCategory,
+                  onChanged: (String? value) {
+                    setState(() {
+                      _selectedCategory = value;
+                    });
                   },
+                  items: ['Fruit', 'Vegetable'].map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(
+                        category,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }).toList(),
+                  decoration: InputDecoration(
+                    labelText: 'Category',
+                    labelStyle: TextStyle(color: Colors.white),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                    ),
+                    
+                  ),
+                  style: TextStyle(color: Colors.white), // Text color for dropdown items
+  dropdownColor: Color.fromARGB(255, 13, 26, 14), 
                 ),
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  _updateVendorLocation();
-                },
-                child: const Text('Update Location'),
-              ),
-            ],
+                TextField(
+                  controller: _priceController,
+                  decoration: InputDecoration(
+                    labelText: 'Price for 1 Kg (Rs) or 1 Dozen',
+                    labelStyle: TextStyle(color: Colors.white),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                    ),
+                  ),
+                  keyboardType: TextInputType.number,
+                  enabled: !_disablePriceTextField,
+                  style: TextStyle(color: Colors.white),
+                ),
+                SizedBox(height: 20.0),
+                InkWell(
+                  onTap: () {
+                    _performAction();
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 40,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 13, 26, 14),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Center(
+                      child: _isLoading
+                          ? CircularProgressIndicator(
+                              color: Colors.white,
+                            )
+                          : Text(
+                              'Perform Action',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 19,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 5,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: FutureBuilder<LatLng>(
+                    future: _fetchVendorLocation(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        _vendorLocation = snapshot.data!;
+                        return GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: _vendorLocation,
+                            zoom: 12,
+                          ),
+                          markers: {
+                            Marker(
+                              markerId: MarkerId('destinationLocation'),
+                              icon: BitmapDescriptor.defaultMarker,
+                              position: _vendorLocation,
+                              draggable: true,
+                            ),
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                ElevatedButton(
+                  onPressed: () {
+                    _updateVendorLocation();
+                  },
+                  child: Text(
+                    'Update Location',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    primary: Color.fromARGB(255, 13, 26, 14),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

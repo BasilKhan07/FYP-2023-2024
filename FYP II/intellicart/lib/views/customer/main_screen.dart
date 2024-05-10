@@ -39,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 13, 26, 14),
         automaticallyImplyLeading: false,
         title: FutureBuilder<String>(
           future: _getCustomer(),
@@ -49,7 +50,10 @@ class _MainScreenState extends State<MainScreen> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return Text('Welcome, ${snapshot.data}');
+                return Text(
+                  'Welcome, ${snapshot.data}',
+                  style: TextStyle(color: Colors.white), // Set text color to white
+                );
               }
             }
           },
@@ -67,7 +71,7 @@ class _MainScreenState extends State<MainScreen> {
                 _signout();
               }
             },
-            icon: const Icon(Icons.more_vert),
+            icon: const Icon(Icons.more_vert, color: Colors.white), // Set icon color to white
           ),
         ],
       ),
@@ -79,8 +83,9 @@ class _MainScreenState extends State<MainScreen> {
             _pageIndex = value;
           });
         },
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.green,
+        unselectedItemColor: Color.fromARGB(255, 152, 155, 156), // Set unselected icon color to white
+        selectedItemColor: const Color.fromARGB(255, 27, 66, 28),
+        backgroundColor: Color.fromARGB(255, 13, 26, 14), // Set background color to dark green
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.near_me),

@@ -31,14 +31,15 @@ class _MainScreenState extends State<MainScreen> {
     Navigator.pop(context);
   }
 
- Future<String> _getVendor() async {
-  return await _authController.getUserInfo();
-}
+  Future<String> _getVendor() async {
+    return await _authController.getUserInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 13, 26, 14),
         automaticallyImplyLeading: false,
         title: FutureBuilder<String>(
           future: _getVendor(),
@@ -49,8 +50,10 @@ class _MainScreenState extends State<MainScreen> {
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else {
-                return Text('Welcome, ${snapshot.data}');
-
+                return Text(
+                  'Welcome, ${snapshot.data}',
+                  style: TextStyle(color: Colors.white), // Set text color to white
+                );
               }
             }
           },
@@ -78,14 +81,14 @@ class _MainScreenState extends State<MainScreen> {
         onTap: (value) {
           setState(() {
             _pageIndex = value;
-            if(_pageIndex == 1){
+            if (_pageIndex == 1) {
               _handleScanPageCalled();
             }
-
           });
         },
-        unselectedItemColor: Colors.black,
-        selectedItemColor: Colors.green,
+         unselectedItemColor: Color.fromARGB(255, 152, 155, 156), // Set unselected icon color to white
+        selectedItemColor: const Color.fromARGB(255, 27, 66, 28),
+        backgroundColor: Color.fromARGB(255, 13, 26, 14),// Set background color to white
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard),
@@ -113,11 +116,9 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-
-   // Function to be called when the Scan page is called
+  // Function to be called when the Scan page is called
   void _handleScanPageCalled() {
     // Call your function or perform your desired action here
     print('Scan page is called!');
   }
-
 }

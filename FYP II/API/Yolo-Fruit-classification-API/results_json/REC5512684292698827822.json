@@ -1,0 +1,15 @@
+{
+    "orange_healthy": 72,
+    "orange_rotten": 76,
+    "apple_healthy": 21,
+    "tomato_ripe": 1,
+    "greenchilli_damaged": 21,
+    "banana_firm": 63,
+    "apple_blotch": 7,
+    "banana_heavilybruised": 20,
+    "tomato_unripe": 3,
+    "banana_slightlybruised": 8,
+    "orange_greening": 1,
+    "greenchilli_dried": 1,
+    "tomato_old": 1
+}

@@ -68,139 +68,117 @@ class _SalesScreenState extends State<SalesScreen> {
   }
 
   Future<void> _addSale() async {
-  try {
-    // Get the current date
-    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    try {
+      // Get the current date
+      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
-    // Create a reference to the sales document for the current date
-    DocumentReference salesRef = FirebaseFirestore.instance
-        .collection('vendors')
-        .doc(_vendorId)
-        .collection('sales')
-        .doc(formattedDate);
+      // Create a reference to the sales document for the current date
+      DocumentReference salesRef = FirebaseFirestore.instance
+          .collection('vendors')
+          .doc(_vendorId)
+          .collection('sales')
+          .doc(formattedDate);
 
-    // Use a transaction to update the sales document atomically
-    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      // Use a transaction to update the sales document atomically
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        // Calculate the total cost for the new sale
+        double productPrice = _products!
+            .firstWhere((product) => product.id == _selectedProductId)['price'];
+        double totalCost = _calculateTotalCost(productPrice);
 
-      // Calculate the total cost for the new sale
-      double productPrice = _products!
-          .firstWhere((product) => product.id == _selectedProductId)['price'];
-      double totalCost = _calculateTotalCost(productPrice);
+        String productName = _products!
+        .firstWhere((product) => product.id == _selectedProductId)['name'];
 
-      String productName = _products!
-      .firstWhere((product) => product.id == _selectedProductId)['name'];
+        DocumentSnapshot salesDoc = await transaction.get(salesRef);
 
-      // Initialize or retrieve the sales data map
-      //Map<String, dynamic> data = salesDoc.exists
-      //    ? salesDoc.data() as Map<String, dynamic>
-      //    : {};
-      DocumentSnapshot salesDoc = await transaction.get(salesRef);
+        if (salesDoc.exists) {
+          Map<String, dynamic> data = salesDoc.data() as Map<String, dynamic>;
 
-      if (salesDoc.exists) {
-      // Get the data map from the document snapshot
-      Map<String, dynamic> data = salesDoc.data() as Map<String, dynamic>;
+          if (data.isNotEmpty) {
+            List<String> keys = data.keys.toList();
+            String lastSaleCounter = keys.last;
 
-      // Check if the document has any fields
-        if (data.isNotEmpty) {
-          // Get the keys (field names) of the data map
-          List<String> keys = data.keys.toList();
-
-          // Get the last field name
-          String lastSaleCounter = keys.last;
-
-          setState(() {
-            int temp = int.parse(lastSaleCounter) + 1;
-            counter = temp.toString();
-          });
-
-        }
+            setState(() {
+              int temp = int.parse(lastSaleCounter) + 1;
+              counter = temp.toString();
+            });
+          }
         } else {
           setState(() {
             counter = '1';
           });
         }
 
-      // Update the sales data with the new sale
-      // if (data.containsKey(_selectedProductId)) {
-      //   // If the product already exists in sales, update quantity and total cost
-      //   int currentQuantity = data[_selectedProductId]['quantity'] ?? 0;
-      //   double currentTotalCost = data[_selectedProductId]['totalCost'] ?? 0.0;
+        Map<String, dynamic> data = { counter : {
+          'productName' : productName,
+          'quantity' : _quantity,
+          'totalCost' : totalCost }
+        };
 
-      //   data[_selectedProductId]['quantity'] = currentQuantity + _quantity;
-      //   data[_selectedProductId]['totalCost'] = currentTotalCost + totalCost;
-      // } else {
-      //   // If the product does not exist in sales, add new entry
-      //   data[_selectedProductId] = {
-      //     'quantity': _quantity,
-      //     'totalCost': totalCost,
-      //   };
-      // }
+        transaction.set(salesRef, data, SetOptions(merge: true));
+      });
 
-      Map<String, dynamic> data = { counter : {
-        'productName' : productName,
-        'quantity' : _quantity,
-        'totalCost' : totalCost }
-      };
-
-
-      // Update the sales data in Firestore
-      transaction.set(salesRef, data, SetOptions(merge: true));
-    });
-
-    // Show Snackbar with success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sale recorded successfully.'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  } catch (e) {
-    print('Error adding sale: $e');
-    // Handle error
+      // Show Snackbar with success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sale recorded successfully.'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    } catch (e) {
+      print('Error adding sale: $e');
+      // Handle error
+    }
   }
-}
-
 
   Future<void> _fetchSalesByDate(DateTime selectedDate) async {
-  try {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-    DocumentSnapshot salesDoc = await FirebaseFirestore.instance
-        .collection('vendors')
-        .doc(_vendorId)
-        .collection('sales')
-        .doc(formattedDate)
-        .get();
+    try {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      DocumentSnapshot salesDoc = await FirebaseFirestore.instance
+          .collection('vendors')
+          .doc(_vendorId)
+          .collection('sales')
+          .doc(formattedDate)
+          .get();
 
-    if (salesDoc.exists) {
-      Map<String, dynamic> salesData = salesDoc.data() as Map<String, dynamic>;
+      if (salesDoc.exists) {
+        Map<String, dynamic> salesData = salesDoc.data() as Map<String, dynamic>;
 
-      // Display total cost for the selected date
-      double totalCost = salesData['totalCost'] ?? 0.0;
-      print('Total Cost for $_selectedDate: $totalCost');
+        double totalCost = salesData['totalCost'] ?? 0.0;
+        print('Total Cost for $_selectedDate: $totalCost');
 
-      // Display products sold with their quantities
-      salesData.forEach((productId, productData) {
-        if (productId != 'totalCost' && productId != 'date') {
-          String productName = _products!
-              .firstWhere((product) => product.id == productId)['name'];
-          int quantity = productData as int; // Get the quantity directly
-          print('$productName: $quantity');
-        }
-      });
-    } else {
-      print('No sales recorded for $_selectedDate');
+        salesData.forEach((productId, productData) {
+          if (productId != 'totalCost' && productId != 'date') {
+            String productName = _products!
+                .firstWhere((product) => product.id == productId)['name'];
+            int quantity = productData as int; // Get the quantity directly
+            print('$productName: $quantity');
+          }
+        });
+      } else {
+        print('No sales recorded for $_selectedDate');
+      }
+    } catch (e) {
+      print('Error fetching sales: $e');
+      // Handle error
     }
-  } catch (e) {
-    print('Error fetching sales: $e');
-    // Handle error
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _products == null
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8), 
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
+        ),
+        child: _products == null
           ? Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
@@ -208,28 +186,43 @@ class _SalesScreenState extends State<SalesScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   DropdownButtonFormField(
-                    value: _selectedProductId,
-                    items: _products!
-                        .map((product) => DropdownMenuItem(
-                              value: product.id,
-                              child: Text(product['name']),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedProductId = value.toString();
-                      });
-                    },
-                    decoration: InputDecoration(
-                      labelText: 'Select Product',
-                    ),
-                  ),
+  value: _selectedProductId,
+  items: _products!
+      .map((product) => DropdownMenuItem(
+            value: product.id,
+            child: Text(
+              product['name'],
+              style: TextStyle(color: Colors.white),
+            ),
+          ))
+      .toList(),
+  onChanged: (value) {
+    setState(() {
+      _selectedProductId = value.toString();
+    });
+  },
+  decoration: InputDecoration(
+    labelText: 'Select Product',
+    labelStyle: TextStyle(color: Colors.white),
+    enabledBorder: UnderlineInputBorder(
+      borderSide: BorderSide(color: Colors.white),
+    ),
+  ),
+  style: TextStyle(color: Colors.white), // Text color for dropdown items
+  dropdownColor: Color.fromARGB(255, 13, 26, 14), // Background color of dropdown
+),
+
                   SizedBox(height: 20.0),
                   TextFormField(
                     initialValue: '1',
                     keyboardType: TextInputType.number,
+                    style: TextStyle(color: Colors.white),
                     decoration: InputDecoration(
                       labelText: 'Quantity',
+                      labelStyle: TextStyle(color: Colors.white),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white),
+                      ),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -239,18 +232,26 @@ class _SalesScreenState extends State<SalesScreen> {
                   ),
                   SizedBox(height: 20.0),
                   ElevatedButton(
-                    onPressed: () {
-                      _addSale();
-                    },
-                    child: Text('Record Sale'),
-                  ),
+  onPressed: () {
+    _addSale();
+  },
+  style: ElevatedButton.styleFrom(
+    primary: Color.fromARGB(255, 13, 26, 14), // Change button color here
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+    ),
+  ),
+  child: Text('Record Sale', style: TextStyle(color: Colors.white)),
+),
+
                   SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Select Date: '),
+                      Text('Select Date: ', style: TextStyle(color: Colors.white)),
                       SizedBox(width: 8.0),
                       ElevatedButton(
+                        
                         onPressed: () async {
                           DateTime? pickedDate = await showDatePicker(
                             context: context,
@@ -266,13 +267,21 @@ class _SalesScreenState extends State<SalesScreen> {
                             _fetchSalesByDate(pickedDate);
                           }
                         },
-                        child: Text('Pick Date'),
+                        
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+                           ),
+                          primary: Color.fromARGB(255, 13, 26, 14), // Change button color here
+                        ),
+                        child: Text('Pick Date', style: TextStyle(color: Colors.white)),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
+      ),
     );
   }
 }
