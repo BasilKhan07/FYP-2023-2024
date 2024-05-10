@@ -120,32 +120,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     //     ),
                     //   ],
                     // );
-                    return Card(
-                      elevation: 4,
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: ListTile(
-                        title: Center(
-                          child: Text(
-                            header,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                    return SingleChildScrollView(
+                      child: Card(
+                        elevation: 4,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: ListTile(
+                          title: Center(
+                            child: Text(
+                              header,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10),
-                            Center(
-                              child: Text(value.toString(),
-                                style: const TextStyle(fontSize: 16),
-                                ),
-                            ),
-                          ],
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 10),
+                              Center(
+                                child: Text(value.toString(),
+                                  style: const TextStyle(fontSize: 16),
+                                  ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

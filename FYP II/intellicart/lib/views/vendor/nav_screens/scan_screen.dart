@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ScanScreen extends StatefulWidget {
   @override
@@ -11,12 +11,13 @@ class ScanScreen extends StatefulWidget {
 class _ScanScreenState extends State<ScanScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
-  bool _isRecording = false;
+  late bool _isRecording;
   late XFile? _videoFile;
 
   @override
   void initState() {
     super.initState();
+    _isRecording = false;
     _initializeControllerFuture = _initializeCamera();
   }
 
@@ -26,19 +27,19 @@ class _ScanScreenState extends State<ScanScreen> {
     return _controller.initialize();
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  Future<String> _getVideoFilePath() async {
+    final appDir = await getTemporaryDirectory();
+    return '${appDir.path}/${DateTime.now()}.mp4';
   }
 
   Future<void> _startRecording() async {
     try {
       await _initializeControllerFuture;
+      final filePath = await _getVideoFilePath();
+      await _controller.startVideoRecording();
       setState(() {
         _isRecording = true;
       });
-      await _controller.startVideoRecording();
     } catch (e) {
       print(e);
     }
@@ -46,14 +47,21 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Future<void> _stopRecording() async {
     try {
+      final videoFile = await _controller.stopVideoRecording();
       setState(() {
+        _videoFile = videoFile;
         _isRecording = false;
       });
-      _videoFile = await _controller.stopVideoRecording();
       print('Video recorded to: ${_videoFile?.path}');
     } catch (e) {
       print(e);
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
