@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intellicart/controllers/vendor_auth_controller.dart';
 import 'package:intellicart/utils/show_snackbar.dart';
-import 'package:intellicart/views/vendor/auth/login_screen.dart';
 
 class VendorRegisterScreen extends StatefulWidget {
   const VendorRegisterScreen({super.key});
@@ -219,14 +218,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                     const Text('Already Have An Account?'),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const VendorLoginScreen();
-                            },
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                       child: const Text('Login'),
                     )

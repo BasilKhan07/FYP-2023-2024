@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/customer_auth_controller.dart';
 import 'package:intellicart/utils/show_snackBar.dart';
+import 'package:intellicart/views/customer/auth/register_screen.dart';
 import 'package:intellicart/views/customer/main_screen.dart';
 
 class CustomerLoginScreen extends StatefulWidget {
@@ -136,7 +137,12 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                 const Text('Need An Account?'),
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CustomerRegisterScreen(),
+                    ),
+                  );
                   },
                   child: const Text('Register'),
                 )

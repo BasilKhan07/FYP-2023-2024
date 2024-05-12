@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intellicart/controllers/customer_auth_controller.dart';
 import 'package:intellicart/utils/show_snackBar.dart';
-import 'package:intellicart/views/customer/auth/login_screen.dart';
 
 class CustomerRegisterScreen extends StatefulWidget {
   const CustomerRegisterScreen({super.key});
@@ -219,14 +218,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                     const Text('Already Have An Account?'),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return const CustomerLoginScreen();
-                            },
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                       child: const Text('Login'),
                     )
