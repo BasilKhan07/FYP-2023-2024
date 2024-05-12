@@ -120,7 +120,7 @@ class _SalesScreenState extends State<SalesScreen> {
 
       // Show Snackbar with success message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Sale recorded successfully.'),
           duration: Duration(seconds: 2),
         ),
@@ -179,7 +179,7 @@ class _SalesScreenState extends State<SalesScreen> {
           ),
         ),
         child: _products == null
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -192,7 +192,7 @@ class _SalesScreenState extends State<SalesScreen> {
             value: product.id,
             child: Text(
               product['name'],
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
             ),
           ))
       .toList(),
@@ -201,27 +201,27 @@ class _SalesScreenState extends State<SalesScreen> {
       _selectedProductId = value.toString();
     });
   },
-  decoration: InputDecoration(
+  decoration: const InputDecoration(
     labelText: 'Select Product',
-    labelStyle: TextStyle(color: Colors.white),
+    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
     enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Colors.white),
+      borderSide: BorderSide(color: Color.fromARGB(255, 181, 184, 185)),
     ),
   ),
-  style: TextStyle(color: Colors.white), // Text color for dropdown items
-  dropdownColor: Color.fromARGB(255, 13, 26, 14), // Background color of dropdown
+  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
+  dropdownColor: const Color.fromARGB(255, 13, 26, 14), // Background color of dropdown
 ),
 
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   TextFormField(
                     initialValue: '1',
                     keyboardType: TextInputType.number,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
+                    style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                    decoration: const InputDecoration(
                       labelText: 'Quantity',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white),
+                        borderSide: BorderSide(color: Color.fromARGB(255, 181, 184, 185)),
                       ),
                     ),
                     onChanged: (value) {
@@ -230,26 +230,26 @@ class _SalesScreenState extends State<SalesScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   ElevatedButton(
   onPressed: () {
     _addSale();
   },
   style: ElevatedButton.styleFrom(
-    primary: Color.fromARGB(255, 13, 26, 14), // Change button color here
+    primary: const Color.fromARGB(255, 13, 26, 14), // Change button color here
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
     ),
   ),
-  child: Text('Record Sale', style: TextStyle(color: Colors.white)),
+  child: const Text('Record Sale', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)),
 ),
 
-                  SizedBox(height: 20.0),
+                  const SizedBox(height: 20.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Select Date: ', style: TextStyle(color: Colors.white)),
-                      SizedBox(width: 8.0),
+                      const Text('Select Date: ', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)),
+                      const SizedBox(width: 8.0),
                       ElevatedButton(
                         
                         onPressed: () async {
@@ -272,9 +272,9 @@ class _SalesScreenState extends State<SalesScreen> {
                           shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
                            ),
-                          primary: Color.fromARGB(255, 13, 26, 14), // Change button color here
+                          primary: const Color.fromARGB(255, 13, 26, 14), // Change button color here
                         ),
-                        child: Text('Pick Date', style: TextStyle(color: Colors.white)),
+                        child: const Text('Pick Date', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)),
                       ),
                     ],
                   ),

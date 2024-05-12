@@ -67,7 +67,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -87,8 +87,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                   const Text(
                     'Create Customer\'s Account',
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white, // Change text color to white
+                      color: Color.fromARGB(255, 229, 229, 229), fontSize: 15, // Change text color to white
                     ),
                   ),
                   const SizedBox(
@@ -136,10 +135,10 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                       onChanged: (value) {
                         email = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Enter Email',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -156,10 +155,10 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                       onChanged: (value) {
                         fullName = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Enter Full Name',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -176,10 +175,10 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                       onChanged: (value) {
                         phoneNumber = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Enter Phone Number',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -197,10 +196,10 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                       onChanged: (value) {
                         password = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -212,7 +211,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                       width: MediaQuery.of(context).size.width - 40,
                       height: 50,
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 13, 26, 14), // Change button color
+                        color: const Color.fromARGB(255, 13, 26, 14), // Change button color
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(
@@ -223,10 +222,9 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                             : const Text(
                                 'Register',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 19,
+                                  color: Color.fromARGB(255, 181, 184, 185), fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  letterSpacing: 4,
+                                  letterSpacing: 3,
                                 ),
                               ),
                       ),
@@ -237,7 +235,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                     children: [
                       const Text(
                         'Already Have An Account?',
-                        style: TextStyle(color: Colors.white), // Change text color to white
+                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       ),
                       TextButton(
                         onPressed: () {
@@ -245,7 +243,7 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
                         },
                         child: const Text(
                           'Login',
-                          style: TextStyle(color: Colors.white), // Change text color to white
+                          style: TextStyle(color: Color.fromARGB(255, 237, 237, 237), fontSize: 14), // Change text color to white
                         ),
                       )
                     ],

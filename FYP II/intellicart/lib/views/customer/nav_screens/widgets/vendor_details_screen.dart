@@ -94,7 +94,7 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false, //added due to screen pixel overflow caused by opening keyboard
       appBar: AppBar(
-        title: Text(widget.fullName, style: const TextStyle(color: Colors.white)), // Text color changed to white
+        title: Text(widget.fullName, style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185),fontSize: 16)), // Text color changed to white
         actions: [
           IconButton(
             icon: Icon(
@@ -295,6 +295,7 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
   context: context,
   builder: (BuildContext context) {
     return Dialog(
+      backgroundColor:  const Color.fromARGB(255, 3, 21, 36),
       insetPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
       child: SingleChildScrollView(
         child: Padding(
@@ -356,8 +357,8 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
-                  decoration: const InputDecoration(labelText: 'Feedback', labelStyle: TextStyle(color: Color.fromARGB(255, 5, 4, 4))), // Text color changed to white
-                  style: const TextStyle(color: Color.fromARGB(255, 12, 10, 10)), // Text color changed to white
+                  decoration: const InputDecoration(labelText: 'Feedback', labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),), // Text color changed to white
+                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185)), // Text color changed to white
                   onChanged: (value) {
                     feedbackText = value;
                   },
@@ -370,14 +371,14 @@ class _VendorDetailsScreenState extends State<VendorDetailsScreen> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Cancel', style: TextStyle(color: Color.fromARGB(255, 16, 13, 13))), // Text color changed to white
+                      child: const Text('Cancel', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185))), // Text color changed to white
                     ),
                     TextButton(
                       onPressed: () {
                         _submitFeedback(customerId, rating, feedbackText);
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Submit', style: TextStyle(color: Color.fromARGB(255, 7, 6, 6))), // Text color changed to white
+                      child: const Text('Submit', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185))), // Text color changed to white
                     ),
                   ],
                 ),

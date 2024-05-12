@@ -213,21 +213,21 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       value: action,
                       child: Text(
                         action,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                       ),
                     );
                   }).toList(),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Action',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                     ),
                   ),
-                  style: TextStyle(color: Colors.white), // Text color for dropdown items
-  dropdownColor: Color.fromARGB(255, 13, 26, 14), 
+                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
+                dropdownColor: const Color.fromARGB(255, 13, 26, 14), 
                 ),
-                SizedBox(height: 10.0),
+                const SizedBox(height: 10.0),
                 if (_selectedAction != "Add")
                   DropdownButtonFormField<String>(
                     value: _selectedProductName,
@@ -241,34 +241,34 @@ class _UpdateScreenState extends State<UpdateScreen> {
                         value: productName,
                         child: Text(
                           productName,
-                          style: TextStyle(color: Colors.white),
+                          style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                         ),
                         
                       );
                     }).toList(),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Selling Product Name',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                       ),
                     ),
-                    style: TextStyle(color: Colors.white), // Text color for dropdown items
-  dropdownColor: Color.fromARGB(255, 13, 26, 14), 
+                    style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
+                    dropdownColor: const Color.fromARGB(255, 13, 26, 14), 
                   ),
                 if(_selectedAction == "Add")
                   TextField(
                     controller: _nameController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
+                    style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                    decoration: const InputDecoration(
                       labelText: 'New Product Name',
-                      labelStyle: TextStyle(color: Colors.white),
+                      labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                       enabledBorder: UnderlineInputBorder(
                         borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                       ),
                     ),
                   ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 10.0),
                 DropdownButtonFormField<String>(
                   value: _selectedCategory,
                   onChanged: (String? value) {
@@ -281,35 +281,35 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       value: category,
                       child: Text(
                         category,
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                       ),
                     );
                   }).toList(),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Category',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                     ),
                     
                   ),
-                  style: TextStyle(color: Colors.white), // Text color for dropdown items
-  dropdownColor: Color.fromARGB(255, 13, 26, 14), 
+                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
+  dropdownColor: const Color.fromARGB(255, 13, 26, 14), 
                 ),
                 TextField(
                   controller: _priceController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Price for 1 Kg (Rs) or 1 Dozen',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                     ),
                   ),
                   keyboardType: TextInputType.number,
                   enabled: !_disablePriceTextField,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 InkWell(
                   onTap: () {
                     _performAction();
@@ -318,27 +318,27 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     width: MediaQuery.of(context).size.width - 40,
                     height: 50,
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 13, 26, 14),
+                      color: const Color.fromARGB(255, 13, 26, 14),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
                       child: _isLoading
-                          ? CircularProgressIndicator(
+                          ? const CircularProgressIndicator(
                               color: Colors.white,
                             )
-                          : Text(
+                          : const Text(
                               'Perform Action',
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 19,
+                                color: Color.fromARGB(255, 181, 184, 185), 
+                                fontSize: 15,
                                 fontWeight: FontWeight.bold,
-                                letterSpacing: 5,
+                                letterSpacing: 3,
                               ),
                             ),
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 SizedBox(
                   height: 300,
                   width: 300,
@@ -346,7 +346,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     future: _fetchVendorLocation(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else {
@@ -358,7 +358,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           ),
                           markers: {
                             Marker(
-                              markerId: MarkerId('destinationLocation'),
+                              markerId: const MarkerId('destinationLocation'),
                               icon: BitmapDescriptor.defaultMarker,
                               position: _vendorLocation,
                               draggable: true,
@@ -369,17 +369,17 @@ class _UpdateScreenState extends State<UpdateScreen> {
                     },
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 ElevatedButton(
                   onPressed: () {
                     _updateVendorLocation();
                   },
-                  child: Text(
+                  child: const Text(
                     'Update Location',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                   ),
                   style: ElevatedButton.styleFrom(
-                    primary: Color.fromARGB(255, 13, 26, 14),
+                    primary: const Color.fromARGB(255, 13, 26, 14),
                   ),
                 ),
               ],

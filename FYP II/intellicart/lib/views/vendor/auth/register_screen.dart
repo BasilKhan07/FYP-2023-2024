@@ -80,8 +80,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                   const Text(
                     'Create Vendor\'s Account',
                     style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white, // Change text color to white
+                      color: Color.fromARGB(255, 216, 217, 218), fontSize: 15 // Change text color to white
                     ),
                   ),
                   const SizedBox(
@@ -129,10 +128,10 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                       onChanged: (value) {
                         email = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Enter Email',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -149,10 +148,10 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                       onChanged: (value) {
                         fullName = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Enter Full Name',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -169,10 +168,10 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                       onChanged: (value) {
                         phoneNumber = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Enter Phone Number',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -190,10 +189,10 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                       onChanged: (value) {
                         password = value;
                       },
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       decoration: const InputDecoration(
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                        labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                       ),
                     ),
                   ),
@@ -216,10 +215,9 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                             : const Text(
                                 'Register',
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 19,
+                                  color: Color.fromARGB(255, 181, 184, 185), fontSize: 14,
                                   fontWeight: FontWeight.bold,
-                                  letterSpacing: 4,
+                                  letterSpacing: 3,
                                 ),
                               ),
                       ),
@@ -230,7 +228,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                     children: [
                       const Text(
                         'Already Have An Account?',
-                        style: TextStyle(color: Colors.white), // Change text color to white
+                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                       ),
                       TextButton(
                         onPressed: () {
@@ -238,7 +236,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                         },
                         child: const Text(
                           'Login',
-                          style: TextStyle(color: Colors.white), // Change text color to white
+                          style: TextStyle(color: Color.fromARGB(255, 232, 232, 232), fontSize: 14), // Change text color to white
                         ),
                       )
                     ],

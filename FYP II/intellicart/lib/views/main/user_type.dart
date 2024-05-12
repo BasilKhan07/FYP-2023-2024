@@ -11,7 +11,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Color.fromARGB(255, 13, 26, 14),
         title: const Center(
-          child: Text('Select User Type', style: TextStyle(color: Colors.white)), // Change text color to white
+          child: Text('Select User Type', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 17),), // Change text color to white
         ),
       ),
       body: Container(
@@ -54,7 +54,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 13, 26, 14)), // Change button color
                 ),
-                child: const Text('Customer', style: TextStyle(color: Colors.white)), // Change text color to white
+                child: const Text('Customer', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)), // Change text color to white
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -69,7 +69,7 @@ class UserTypeSelectionScreen extends StatelessWidget {
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 13, 26, 14)), // Change button color
                 ),
-                child: const Text('Vendor', style: TextStyle(color: Colors.white)), // Change text color to white
+                child: const Text('Vendor', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)), // Change text color to white
               ),
             ],
           ),

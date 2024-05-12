@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,7 +16,6 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  late String _vendorId;
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   late bool _isRecording;
@@ -28,21 +28,7 @@ class _ScanScreenState extends State<ScanScreen> {
     super.initState();
     _isRecording = false;
     _initializeControllerFuture = _initializeCamera();
-     _getVendorId();
-  }
-
-  Future<void> _getVendorId() async {
-    if (user != null) {
-      DocumentSnapshot vendorDoc = await FirebaseFirestore.instance
-          .collection('vendors')
-          .doc(user!.uid)
-          .get();
-      setState(() {
-        _vendorId = vendorDoc.id;
-      });
-    } else {
-      
-    }
+     user = _auth.currentUser;
   }
 
   Future<void> _initializeCamera() async {
@@ -51,15 +37,15 @@ class _ScanScreenState extends State<ScanScreen> {
     return _controller.initialize();
   }
 
-  Future<String> _getVideoFilePath() async {
-    final appDir = await getTemporaryDirectory();
-    return '${appDir.path}/${DateTime.now()}.mp4';
-  }
+  // Future<String> _getVideoFilePath() async {
+  //   final appDir = await getTemporaryDirectory();
+  //   return '${appDir.path}/${DateTime.now()}.mp4';
+  // }
 
   Future<void> _startRecording() async {
     try {
       await _initializeControllerFuture;
-      final filePath = await _getVideoFilePath();
+      // final filePath = await _getVideoFilePath();
       await _controller.startVideoRecording();
       setState(() {
         _isRecording = true;
@@ -70,63 +56,88 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   Future<void> _stopRecording() async {
-    try {
-      final videoFile = await _controller.stopVideoRecording();
-      setState(() {
-        _videoFile = videoFile;
-        _isRecording = false;
-      });
-      print('Video recorded to: ${_videoFile?.path}');
-
-      // Upload the recorded video file to API endpoint
-      final url = Uri.parse('http://192.168.18.15:8000/upload_video/');
-      var request = http.MultipartRequest('POST', url);
-      request.files.add(await http.MultipartFile.fromPath(
-          'video_file', _videoFile!.path));
-
-      var response = await request.send();
-      if (response.statusCode == 200) {
-        // Parse the response and save the results to vendor collection database
-        String responseBody = await response.stream.bytesToString();
-        saveResultsToDatabase(responseBody);
-        print('Video uploaded successfully');
-      } else {
-        print('Failed to upload video');
-      }
-
-      // Show upload status prompt
-      _showUploadStatusPrompt(response.statusCode == 200);
-    } catch (e) {
-      print(e);
+  try {
+    final videoFile = await _controller.stopVideoRecording();
+    setState(() {
+      _videoFile = videoFile;
+      _isRecording = false;
+    });
+    print('Video recorded to: ${_videoFile?.path}');
+    if (_isRecording==false) {
+      print("Video is being uploadedddddddddddddddd");
+       // Show upload status prompt
+      _showUploadStatusPrompt(true, "Video will be uploaded soon! Please wait");
+    
+      //print('Video uploaded successfully');
     }
-  }
 
-  void saveResultsToDatabase(String responseBody) async {
+    // Upload the recorded video file to API endpoint
+    final url = Uri.parse('http://192.168.18.15:8000/upload_video/');
+    var request = http.MultipartRequest('POST', url);
+    request.files.add(await http.MultipartFile.fromPath(
+        'video_file', _videoFile!.path));
+
+    var response = await request.send();
+      if (response.statusCode == 200){
+      // Parse the response and save the results to vendor collection database
+      String responseBody = await response.stream.bytesToString();
+      
+      saveResultsToDatabase(responseBody);
+      if(await saveResultsToDatabase(responseBody))
+      {
+        _showUploadStatusPrompt(true, "Video Uploaded Successfully");
+      }
+      print("Actually uploaded now");
+      // _sendpushnotification();
+    } 
+    else {
+      print('Failed to upload video');
+    }
+
+  } catch (e) {
+    print(e);
+  }
+}
+
+
+  Future<bool> saveResultsToDatabase(String responseBody) async {
     try {
       // Parse the response body if needed
       var data = json.decode(responseBody);
+      DateTime now = DateTime.now();
+      String formattedDate = '${now.year}-${now.month}-${now.day}';
 
       // Save the results to the vendor collection database
-      await FirebaseFirestore.instance
-          .collection('vendors')
-          .doc(_vendorId)
-          .collection('video_results')
-          .add(data);
+      // Get a reference to the collection and document where you want to add data
+      DocumentReference documentReference = FirebaseFirestore.instance
+        .collection('vendors')
+        .doc(user!.uid) // Assuming user is already defined and authenticated
+        .collection('video_results')
+        .doc(formattedDate); // Use the formatted date as the document ID
+
+    // Define the data you want to add
+   
+    // Add the data to the document
+    await documentReference.set(data); // Add to a subcollection if needed
+
 
       print('Results saved to database');
+      return true;
+      
     } catch (e) {
       print('Error saving results to database: $e');
+      return false;
     }
   }
 
-  void _showUploadStatusPrompt(bool uploadedSuccessfully) {
+  void _showUploadStatusPrompt(bool uploadedSuccessfully, String status) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(uploadedSuccessfully ? 'Upload Success' : 'Upload Failed'),
+          title: Text(uploadedSuccessfully ? 'Upload status' : 'Upload Failed'),
           content: Text(uploadedSuccessfully
-              ? 'The video has been uploaded successfully.'
+              ? status
               : 'Failed to upload the video.'),
           actions: <Widget>[
             TextButton(
@@ -140,6 +151,7 @@ class _ScanScreenState extends State<ScanScreen> {
       },
     );
   }
+  
 
   @override
   void dispose() {

@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
               } else {
                 return Text(
                   'Welcome, ${snapshot.data}',
-                  style: TextStyle(color: Colors.white), // Set text color to white
+                  style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 16), // Set text color to white
                 );
               }
             }

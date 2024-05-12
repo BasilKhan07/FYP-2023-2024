@@ -56,11 +56,11 @@ class _SearchScreenState extends State<SearchScreen> {
               child: TextField(
                 controller: _searchController,
                 decoration: const InputDecoration(
-                  hintText: 'Search for fruit/vegetable',
-                  hintStyle: TextStyle(color: Color.fromARGB(255, 240, 239, 239)), // Change hint text color to white
-                  prefixIcon: Icon(Icons.search),
+                  hintText: 'Search for Fruit/Vegetable',
+                  hintStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185)), // Change hint text color to white
+                  prefixIcon: Icon(Icons.search, color: Color.fromARGB(255, 181, 184, 185),),
                 ),
-                style: TextStyle(color: Colors.white), // Change text color to white
+                style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 16), // Change text color to white
                 onChanged: (value) {
                   setState(() {}); // Trigger rebuild when the text changes
                 },

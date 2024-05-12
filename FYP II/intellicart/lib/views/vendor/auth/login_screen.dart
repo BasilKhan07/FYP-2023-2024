@@ -72,9 +72,9 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
               const Text(
                 'Login Vendor\'s Account',
                 style: TextStyle(
-                  fontSize: 20,
+                
                   fontWeight: FontWeight.bold,
-                  color: Colors.white, // Change text color to white
+                  color: Color.fromARGB(255, 223, 224, 225), fontSize: 15 // Change text color to white
                 ),
               ),
               Padding(
@@ -90,10 +90,10 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                   onChanged: (value) {
                     email = value;
                   },
-                  style: TextStyle(color: Colors.white), // Change text color to white
+                  style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                   decoration: const InputDecoration(
                     labelText: 'Enter Email Address',
-                    labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                   ),
                 ),
               ),
@@ -111,10 +111,10 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                   onChanged: (value) {
                     password = value;
                   },
-                  style: TextStyle(color: Colors.white), // Change text color to white
+                  style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                   decoration: const InputDecoration(
                     labelText: 'Enter Password',
-                    labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
                   ),
                 ),
               ),
@@ -138,10 +138,9 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                         : const Text(
                             'Login',
                             style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 19,
+                              color: Color.fromARGB(255, 181, 184, 185), fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              letterSpacing: 5,
+                              letterSpacing: 3,
                             ),
                           ),
                   ),
@@ -152,7 +151,7 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                 children: [
                   const Text(
                     'Need An Account?',
-                    style: TextStyle(color: Colors.white), // Change text color to white
+                    style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                   ),
                   TextButton(
                     onPressed: () {
@@ -165,7 +164,7 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
                     },
                     child: const Text(
                       'Register',
-                      style: TextStyle(color: Colors.white), // Change text color to white
+                      style: TextStyle(color: Color.fromARGB(255, 233, 234, 234), fontSize: 14), // Change text color to white
                     ),
                   )
                 ],
