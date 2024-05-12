@@ -5,7 +5,7 @@ import 'package:intellicart/views/vendor/auth/register_screen.dart';
 import 'package:intellicart/views/vendor/main_screen.dart';
 
 class VendorLoginScreen extends StatefulWidget {
-  const VendorLoginScreen({super.key});
+  const VendorLoginScreen({Key? key}) : super(key: key);
 
   @override
   State<VendorLoginScreen> createState() => _VendorLoginScreenState();
@@ -53,102 +53,125 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'Login Vendor''s Account',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(13.0),
-              child: TextFormField(
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please Email field must not be empty';
-                  } else {
-                    return null;
-                  }
-                },
-                onChanged: (value) {
-                  email = value;
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Enter Email Address',
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8),
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'Login Vendor\'s Account',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white, // Change text color to white
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(13.0),
-              child: TextFormField(
-                obscureText: true,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please Password field must not be empty';
-                  } else {
-                    return null;
-                  }
-                },
-                onChanged: (value) {
-                  password = value;
-                },
-                decoration: const InputDecoration(
-                  labelText: 'Enter Password',
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            InkWell(
-              onTap: () {
-                _loginUsers();
-              },
-              child: Container(
-                width: MediaQuery.of(context).size.width - 40,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.lightGreenAccent,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: _isLoading
-                      ? const CircularProgressIndicator(
-                          color: Colors.white,
-                        )
-                      : const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 19,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 5,
-                          ),
-                        ),
-                ),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Need An Account?'),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const VendorRegisterScreen(),
-                    ),
-                  );
+              Padding(
+                padding: const EdgeInsets.all(13.0),
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please Email field must not be empty';
+                    } else {
+                      return null;
+                    }
                   },
-                  child: const Text('Register'),
-                )
-              ],
-            )
-          ],
+                  onChanged: (value) {
+                    email = value;
+                  },
+                  style: TextStyle(color: Colors.white), // Change text color to white
+                  decoration: const InputDecoration(
+                    labelText: 'Enter Email Address',
+                    labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(13.0),
+                child: TextFormField(
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please Password field must not be empty';
+                    } else {
+                      return null;
+                    }
+                  },
+                  onChanged: (value) {
+                    password = value;
+                  },
+                  style: TextStyle(color: Colors.white), // Change text color to white
+                  decoration: const InputDecoration(
+                    labelText: 'Enter Password',
+                    labelStyle: TextStyle(color: Colors.white), // Change label text color to white
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              InkWell(
+                onTap: () {
+                  _loginUsers();
+                },
+                child: Container(
+                  width: MediaQuery.of(context).size.width - 40,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 13, 26, 14), // Change button color
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 19,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 5,
+                            ),
+                          ),
+                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Need An Account?',
+                    style: TextStyle(color: Colors.white), // Change text color to white
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const VendorRegisterScreen(),
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white), // Change text color to white
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

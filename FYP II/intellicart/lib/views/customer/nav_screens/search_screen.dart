@@ -57,9 +57,10 @@ class _SearchScreenState extends State<SearchScreen> {
                 controller: _searchController,
                 decoration: const InputDecoration(
                   hintText: 'Search for fruit/vegetable',
-                  hintStyle: TextStyle(color: Colors.white), // Change hint text color to white
+                  hintStyle: TextStyle(color: Color.fromARGB(255, 240, 239, 239)), // Change hint text color to white
                   prefixIcon: Icon(Icons.search),
                 ),
+                style: TextStyle(color: Colors.white), // Change text color to white
                 onChanged: (value) {
                   setState(() {}); // Trigger rebuild when the text changes
                 },
@@ -125,7 +126,12 @@ class _SearchScreenState extends State<SearchScreen> {
                                 margin: const EdgeInsets.all(10.0),
                                 color: const Color.fromARGB(255, 200, 234, 199), // Light green
                                 child: ListTile(
-                                  title: Text('Vendor: $fullName'),
+                                  title: Text(
+                                  'Vendor: ${fullName.toUpperCase()}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                   subtitle: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -145,7 +151,11 @@ class _SearchScreenState extends State<SearchScreen> {
 
                                           final feedbackList = feedbackSnapshot.data!.docs;
                                           if (feedbackList.isEmpty) {
-                                            return const Text('Avg Rating: No ratings available');
+                                            return const Text('Avg Rating: No ratings available',
+                                            style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                            );
                                           }
 
                                           int totalRating = 0;
@@ -169,8 +179,10 @@ class _SearchScreenState extends State<SearchScreen> {
                                           return Padding(
                                             padding: const EdgeInsets.symmetric(vertical: 4.0),
                                             child: Text(
-                                              '$productName - $category: Rs. ${price.toStringAsFixed(2)} per kg / dozen  Govt_price : $govtPrice',
-                                              style: const TextStyle(fontSize: 16.0),
+                                              '${productName.toUpperCase()} - $category: Rs. ${price.toStringAsFixed(2)} per kg / dozen  Govt_price : $govtPrice',
+                                              style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           );
                                         }).toList(),

@@ -93,95 +93,114 @@ class _NearbyScreenState extends State<NearbyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _getVendors(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8), 
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
+        ),
+        child: StreamBuilder<QuerySnapshot>(
+          stream: _getVendors(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          final vendors = snapshot.data!.docs;
+            final vendors = snapshot.data!.docs;
 
-          return ListView.builder(
-            itemCount: vendors.length,
-            itemBuilder: (context, index) {
-              var vendor = vendors[index];
-              String fullName = vendor['fullName'];
-              GeoPoint? vendorLocation = vendor['location']; // Fetch vendor location
+            return ListView.builder(
+              itemCount: vendors.length,
+              itemBuilder: (context, index) {
+                var vendor = vendors[index];
+                String fullName = vendor['fullName'];
+                GeoPoint? vendorLocation = vendor['location']; // Fetch vendor location
 
-              if (_currentPosition != null && vendorLocation != null) {
-                double distance = _calculateDistance(
-                    _currentPosition!.latitude,
-                    _currentPosition!.longitude,
-                    vendorLocation.latitude,
-                    vendorLocation.longitude);
-                if (distance > 1) {
-                  // Skip vendors outside the 1 km radius
-                  return Container();
+                if (_currentPosition != null && vendorLocation != null) {
+                  double distance = _calculateDistance(
+                      _currentPosition!.latitude,
+                      _currentPosition!.longitude,
+                      vendorLocation.latitude,
+                      vendorLocation.longitude);
+                  if (distance > 1) {
+                    // Skip vendors outside the 1 km radius
+                    return Container();
+                  }
                 }
-              }
 
-              return InkWell(
-                onTap: () {
-                  // Navigate to vendor details screen on tap
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VendorDetailsScreen(
-                        vendorId: vendor.id,
-                        fullName: fullName,
-                        location: vendorLocation,
+                return InkWell(
+                  onTap: () {
+                    // Navigate to vendor details screen on tap
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VendorDetailsScreen(
+                          vendorId: vendor.id,
+                          fullName: fullName,
+                          location: vendorLocation,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    color: const Color.fromARGB(255, 200, 234, 199), 
+                    margin: const EdgeInsets.all(10.0),
+                    child: ListTile(
+                      title: Text(
+                                  'Vendor: ${fullName.toUpperCase()}',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                      subtitle: StreamBuilder<QuerySnapshot>(
+                        stream: vendor.reference.collection('products').snapshots(),
+                        builder: (context, productSnapshot) {
+                          if (productSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          }
+                          if (productSnapshot.hasError) {
+                            return Text('Error: ${productSnapshot.error}');
+                          }
+
+                          final products = productSnapshot.data!.docs;
+
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: products.map((product) {
+                              String productName = product['name'];
+                              int? govtPrice =
+                                  priceData?[productName] as int? ?? -1;
+                              String category = product['category'];
+                              double price = product['price'];
+
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                child:  Text(
+                                              '${productName.toUpperCase()} - $category: Rs. ${price.toStringAsFixed(2)} per kg / dozen  Govt_price : $govtPrice',
+                                              style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                              );
+                            }).toList(),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
-                child: Card(
-                  margin: const EdgeInsets.all(10.0),
-                  child: ListTile(
-                    title: Text('vendor: $fullName'),
-                    subtitle: StreamBuilder<QuerySnapshot>(
-                      stream: vendor.reference.collection('products').snapshots(),
-                      builder: (context, productSnapshot) {
-                        if (productSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        }
-                        if (productSnapshot.hasError) {
-                          return Text('Error: ${productSnapshot.error}');
-                        }
-
-                        final products = productSnapshot.data!.docs;
-
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: products.map((product) {
-                            String productName = product['name'];
-                            int? govtPrice =
-                                priceData?[productName] as int? ?? -1;
-                            String category = product['category'];
-                            double price = product['price'];
-
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4.0),
-                              child: Text(
-                                '$productName - $category: Rs. ${price.toStringAsFixed(2)} per kg / dozen  Govt_price : $govtPrice',
-                                style: const TextStyle(fontSize: 16.0),
-                              ),
-                            );
-                          }).toList(),
-                        );
-                      },
-                    ),
                   ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _updateLocation,

@@ -3,27 +3,28 @@ import 'package:intellicart/views/customer/auth/login_screen.dart';
 import 'package:intellicart/views/vendor/auth/login_screen.dart';
 
 class UserTypeSelectionScreen extends StatelessWidget {
-  const UserTypeSelectionScreen({super.key});
+  const UserTypeSelectionScreen({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 13, 26, 14),
         title: const Center(
-          child: Text('Select User Type'),
+          child: Text('Select User Type', style: TextStyle(color: Colors.white)), // Change text color to white
         ),
       ),
       body: Container(
         decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Color.fromARGB(255, 6, 24, 8),
-            Color.fromARGB(255, 109, 161, 121),
-          ],
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8),
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
         ),
-      ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -50,7 +51,10 @@ class UserTypeSelectionScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Customer'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 13, 26, 14)), // Change button color
+                ),
+                child: const Text('Customer', style: TextStyle(color: Colors.white)), // Change text color to white
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -62,7 +66,10 @@ class UserTypeSelectionScreen extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text('Vendor'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Color.fromARGB(255, 13, 26, 14)), // Change button color
+                ),
+                child: const Text('Vendor', style: TextStyle(color: Colors.white)), // Change text color to white
               ),
             ],
           ),
