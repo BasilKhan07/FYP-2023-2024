@@ -9,55 +9,68 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser?.uid).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8), 
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
+        ),
+        child: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance.collection('customers').doc(FirebaseAuth.instance.currentUser?.uid).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            }
 
-          List<dynamic> favoriteVendors = snapshot.data!.get('favorites') ?? [];
+            List<dynamic> favoriteVendors = snapshot.data!.get('favorites') ?? [];
 
-          if (favoriteVendors.isEmpty) {
-            return Center(child: Text('No favorites yet.'));
-          }
+            if (favoriteVendors.isEmpty) {
+              return Center(child: Text('No favorites yet.'));
+            }
 
-          return ListView.builder(
-            itemCount: favoriteVendors.length,
-            itemBuilder: (context, index) {
-              var vendor = favoriteVendors[index];
-              String vendorId = vendor['vendorId'];
-              String fullName = vendor['fullName'];
-              GeoPoint? location = vendor['location'];
+            return ListView.builder(
+              itemCount: favoriteVendors.length,
+              itemBuilder: (context, index) {
+                var vendor = favoriteVendors[index];
+                String vendorId = vendor['vendorId'];
+                String fullName = vendor['fullName'];
+                GeoPoint? location = vendor['location'];
 
-              return InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VendorDetailsScreen(
-                        vendorId: vendorId,
-                        fullName: fullName,
-                        location: location,
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VendorDetailsScreen(
+                          vendorId: vendorId,
+                          fullName: fullName,
+                          location: location,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.all(10.0),
+                    child: Container(
+                      color: const Color.fromARGB(255, 200, 234, 199), // Changed background color here
+                      child: ListTile(
+                        title: Text('Vendor: $fullName'),
                       ),
                     ),
-                  );
-                },
-                child: Card(
-                  margin: const EdgeInsets.all(10.0),
-                  child: ListTile(
-                    title: Text('Vendor: $fullName'),
-                    
                   ),
-                ),
-              );
-            },
-          );
-        },
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

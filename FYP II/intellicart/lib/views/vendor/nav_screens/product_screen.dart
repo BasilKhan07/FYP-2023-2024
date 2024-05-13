@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/vendor_product_controller.dart';
+import 'widgets/product_display_card.dart';
 
 class ProductsScreen extends StatelessWidget {
   final VendorProductController _vendorProductController =
@@ -11,62 +11,43 @@ class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StreamBuilder<QuerySnapshot>(
-        stream: _vendorProductController.getProductsStream(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text('No products added yet.'));
-          } else {
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                var productData =
-                    snapshot.data!.docs[index].data() as Map<String, dynamic>;
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 6, 24, 8), 
+              Color.fromARGB(255, 109, 161, 121),
+            ],
+          ),
+        ),
+        child: StreamBuilder<Map>(
+          stream: _vendorProductController.getProductsinCategoryStream(),
+          builder: (context, AsyncSnapshot<Map> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text('Error: ${snapshot.error}'));
+            } else if (snapshot.data!.isEmpty) {
+              return const Center(child: Text('No products added yet.'));
+            } else {
 
-                String productName = productData['name'];
-                String productCategory = productData['category'];
-                double productPrice = productData['price'];
+              List<dynamic>? vegList = snapshot.data?['Vegetables'];
+              List<dynamic>? fruitList = snapshot.data?['Fruits'];
 
-                return Card(
-                  elevation: 4,
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      productName,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 4),
-                        Text(
-                          'Category: $productCategory',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'Price: Rs. ${productPrice.toStringAsFixed(2)} per kg / dozen',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                    onTap: () {},
-                  ),
-                );
-              },
-            );
-          }
-        },
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [ 
+                    CustomCategoryCard(categoryName: 'Vegetables',displayList: vegList, image: 'assets/images/vegetables.jpg'),
+                    CustomCategoryCard(categoryName: 'Fruits',displayList: fruitList, image: 'assets/images/fruits.jpg'),
+                  ],
+                ),
+              );
+            } //else
+          },
+        ),
       ),
     );
   }

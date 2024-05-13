@@ -40,7 +40,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
     if (_image == null) return;
 
     String apiUrl =
-        'http://172.20.10.5:8000/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
+        'http://192.168.18.15:8050/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
     // wifi on phone and laptop should be same
     var request =
         http.MultipartRequest('POST', Uri.parse(apiUrl));
@@ -90,7 +90,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
                 child: _image == null
                     ? const Text(
                         'No image selected.',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                       )
                     : Image.file(_image!),
               ),
@@ -103,7 +103,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
                   onPressed: getImageFromGallery,
                   child: const Text(
                     'Select Image',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                   ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.black87,
@@ -113,7 +113,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
                   onPressed: getImageFromCamera,
                   child: const Text(
                     'Take Picture',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                   ),
                   style: ElevatedButton.styleFrom(
                     primary: Colors.black87,
@@ -125,7 +125,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
               onPressed: predictImage,
               child: const Text(
                 'Predict',
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
               ),
               style: ElevatedButton.styleFrom(
                 primary: Colors.black87,
@@ -134,7 +134,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
             const SizedBox(height: 20.0),
             Text(
               'Prediction: $_prediction',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
             ),
           ],
         ),

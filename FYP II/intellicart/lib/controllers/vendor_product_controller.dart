@@ -2,15 +2,38 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class VendorProductController {
+  User? user = FirebaseAuth.instance.currentUser; //user.uid
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot> getProductsStream() {
-    return _firestore
-        .collection('vendors')
-        .doc(_auth.currentUser!.uid)
-        .collection('products')
-        .snapshots();
+  Stream<Map> getProductsinCategoryStream() async* {
+    final user = this.user;
+
+    Map output = {'Vegetables': [],
+                  'Fruits' : []
+                  };
+    if (user != null) {
+      QuerySnapshot vendorProductsinCategories = await _firestore
+          .collection('vendors')
+          .doc(user.uid)
+          .collection('products')
+          .get();
+
+     for (var productDoc in vendorProductsinCategories.docs) {
+        Map<String, dynamic> data = productDoc.data() as Map<String, dynamic>;
+        // chck for category and place accordingly in output
+        //print(data);
+        dynamic category = data['category'];
+        if (category == 'Vegetable'){
+          output['Vegetables'].add(data);
+        }else if (category == 'Fruit'){
+          output['Fruits'].add(data);
+        }
+      }
+    }
+
+    print('output is  ----------------->   $output');
+    yield output;
   }
 
   Future<String> addProduct(String name, String category, String price) async {
