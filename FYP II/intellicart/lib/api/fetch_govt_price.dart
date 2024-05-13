@@ -60,7 +60,7 @@ class PriceFetcher {
     print(formatteddate);
     
     try{
-      final response = await http.get(Uri.parse('http://192.168.0.8:8001/$formatteddate'));
+      final response = await http.get(Uri.parse('http://192.168.18.15:9000/$formatteddate'));
 
       if (response.statusCode == 200) {
         Map<String, dynamic> prices = json.decode(response.body);
