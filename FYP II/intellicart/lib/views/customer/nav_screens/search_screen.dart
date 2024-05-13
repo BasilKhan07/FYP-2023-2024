@@ -15,6 +15,26 @@ class _SearchScreenState extends State<SearchScreen> {
   final CustomerVendorController _vendorController = CustomerVendorController();
   final PriceFetcher priceFetcher = PriceFetcher();
   Map<String, dynamic>? priceData;
+  Map<String, dynamic> myMap = {
+    'apple_blotch': 0,
+    'apple_healthy': 0,
+    'apple_rotten': 0,
+    'apple_scab': 0,
+    'banana_firm': 0,
+    'banana_heavilybruised': 0,
+    'banana_slightlybruised': 0,
+    'greenchilli_damaged': 0,
+    'greenchilli_dried': 0,
+    'greenchilli_old': 0,
+    'greenchilli_ripe': 0,
+    'orange_greening': 0,
+    'orange_healthy': 0,
+    'orange_rotten': 0,
+    'tomato_old': 0,
+    'tomato_ripe': 0,
+    'tomato_rotten': 0,
+    'tomato_unripe': 0
+  };
 
   final TextEditingController _searchController = TextEditingController();
 
@@ -33,6 +53,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Stream<QuerySnapshot<Object>> _getVendors() {
     return _vendorController.getVendors();
+  }
+
+  Future<Map<String, dynamic>> _getVendorQuality(String vendorId) async {
+    print("In quality function");
+    print(vendorId);
+    DateTime now = DateTime.now();
+    String formattedDate = '${now.year}-${now.month}-${now.day}';
+    final vendorDoc = await FirebaseFirestore.instance.collection('vendors').doc(vendorId).get();
+    print('vendor DOCCCCCCCCCCCCCC');
+    final videoResultsDoc = await vendorDoc.reference.collection('video_results').doc(formattedDate).get();
+    print(videoResultsDoc.data());
+    return videoResultsDoc.data() as Map<String, dynamic>? ?? {};
   }
 
   @override
@@ -127,7 +159,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                 color: const Color.fromARGB(255, 200, 234, 199), // Light green
                                 child: ListTile(
                                   title: Text(
-                                  'Vendor: ${fullName.toUpperCase()}',
+                                    'Vendor: ${fullName.toUpperCase()}',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -152,9 +184,9 @@ class _SearchScreenState extends State<SearchScreen> {
                                           final feedbackList = feedbackSnapshot.data!.docs;
                                           if (feedbackList.isEmpty) {
                                             return const Text('Avg Rating: No ratings available',
-                                            style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             );
                                           }
 
@@ -168,24 +200,79 @@ class _SearchScreenState extends State<SearchScreen> {
                                         },
                                       ),
                                       const SizedBox(height: 8),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: filteredProducts.map((product) {
-                                          String productName = product['name'];
-                                          int? govtPrice = priceData?[productName] as int? ?? -1;
-                                          String category = product['category'];
-                                          double price = product['price'];
+                                      FutureBuilder<Map<String, dynamic>>(
+                                        future: _getVendorQuality(vendorId),
+                                        builder: (context, priceSnapshot) {
+                                          if (priceSnapshot.connectionState == ConnectionState.waiting) {
+                                            return const CircularProgressIndicator();
+                                          }
+                                          if (priceSnapshot.hasError) {
+                                            return Text('Error: ${priceSnapshot.error}');
+                                          }
 
-                                          return Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                            child: Text(
-                                              '${productName.toUpperCase()} - $category: Rs. ${price.toStringAsFixed(2)} per kg / dozen  Govt_price : $govtPrice',
-                                              style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
+                                          final vendorQuality = priceSnapshot.data;
+
+                                          if (vendorQuality == null) {
+                                            // Handle the case where data is not available
+                                            return const Text('No data available');
+                                          }
+                                          myMap.clear(); // Clear myMap before updating it
+                                          myMap.addAll(vendorQuality);
+
+                                          // Update myMap directly
+                                          for (var entry in vendorQuality.entries) {
+                                            if (myMap.containsKey(entry.key)) {
+                                              myMap[entry.key] = entry.value;
+                                            }
+                                            else{
+                                            }
+                                          }
+
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: filteredProducts.map((product) {
+                                              String productName = product['name'];
+                                              int? govtPrice = priceData?[productName] as int? ?? -1;
+                                              double price = product['price'];
+
+                                              String additionalInfo = '';
+                                              // Check the product name and add additional info accordingly
+                                              if (productName.toLowerCase() == 'apple') {
+                                                additionalInfo = 'Blotch: ${myMap['apple_blotch'] ?? 0} %\n';
+                                                additionalInfo += 'Healthy: ${myMap['apple_healthy'] ?? 0} %\n';
+                                                additionalInfo += 'Rotten: ${myMap['apple_rotten'] ?? 0} %\n';
+                                                additionalInfo += 'Scan: ${myMap['apple_scab'] ?? 0} %\n';
+                                              } else if (productName.toLowerCase() == 'green chilli') {
+                                                additionalInfo = 'Damaged: ${myMap['greenchilli_damaged'] ?? 0 } %';
+                                                additionalInfo += '\nDried: ${myMap['greenchilli_dried'] ?? 0} %';
+                                                additionalInfo += '\nOld: ${myMap['greenchilli_old'] ?? 0 } %';
+                                                additionalInfo += '\nRipe: ${myMap['greenchilli_ripe' ]?? 0} %';
+                                              } else if (productName.toLowerCase() == 'banana') {
+                                                additionalInfo = 'Firm: ${myMap['banana_firm']} %';
+                                                additionalInfo += '\nHeavily bruised: ${myMap['banana_heavilybruised'] ?? 0} %';
+                                                additionalInfo += '\nSlightly bruised: ${myMap['banana_slightlybruised'] ?? 0} %';
+                                              } else if (productName.toLowerCase() == 'orange') {
+                                                additionalInfo = 'Greening: ${myMap['orange_greening'] ?? 0} %';
+                                                additionalInfo += '\nHealthy: ${myMap['orange_healthy'] ?? 0} %';
+                                                additionalInfo += '\nRotten: ${myMap['orange_rotten'] ?? 0} %';
+                                              } else if (productName.toLowerCase() == 'tomato') {
+                                                additionalInfo = 'Old: ${myMap['tomato_old']?? 0} %';
+                                                additionalInfo += '\nRipe: ${myMap['tomato_ripe']}?? 0 %';
+                                                additionalInfo += '\nRotten: ${myMap['tomato_rotten'] ?? 0} %';
+                                                additionalInfo += '\nUnripe: ${myMap['tomato_unripe'] ?? 0} %';
+                                              }
+                                              return Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                                child: Text(
+                                                '${productName.toUpperCase()}: Rs. ${price.toStringAsFixed(2)} per kg / dozen \nGovt_price : $govtPrice \n$additionalInfo',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                                                                                )
+                                              );
+                                            }).toList(),
                                           );
-                                        }).toList(),
+                                        },
                                       ),
                                     ],
                                   ),
