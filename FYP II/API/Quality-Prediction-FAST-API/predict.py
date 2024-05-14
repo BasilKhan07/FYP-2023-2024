@@ -17,13 +17,9 @@ except Exception as e:
 def predict_class(image_arr):
     predictions = mobilenet_model.predict(image_arr) 
 
-    # Normalize prediction scores to percentages
-    total_score = np.sum(predictions)
-    normalized_scores = (predictions / total_score) * 100
-
     # Get most likely class
     predicted_classes = np.argmax(predictions, axis=1)
-    # Assuming the model returns a list of classes with probabilities
+    #Assuming the model returns a list of classes with probabilities
     # You may need to adjust this part based on your model's output format
     class_labels = ['Apple_blotch','Apple_healthy', 'Apple_rotten','Apple_scab',
                     'Banana_firm','Banana_heavilybruised','Banana_slightlybruised',
@@ -32,8 +28,7 @@ def predict_class(image_arr):
                     'Tomato_old','Tomato_ripe','Tomato_rotten','Tomato_unripe']  # Provide your class names here
     predicted_classes = [class_labels[i] for i in np.argmax(predictions, axis=1)]
 
-    return predicted_classes, normalized_scores
-
+    return predicted_classes
 
 # preprocess image
 def preprocess_image(image):
@@ -57,12 +52,9 @@ async def predict(image: UploadFile = File(...)):
     img_arr = preprocess_image(img)
     
     # Make predictions using the model
-    predicted_classes, normalized_scores = predict_class(img_arr)
+    predicted_classes = predict_class(img_arr)
     
-    # To print time for logs
+    #To print time for logs
     timestamp = datetime.now().strftime("%d %B %Y %H:%M:%S")
     print(str(timestamp) + "  --------  " + str({"predictions": predicted_classes}))
-    
-    # Return predictions along with normalized scores
-    return {"predictions": predicted_classes, "normalized_scores": normalized_scores}
-
+    return {"predictions": predicted_classes}

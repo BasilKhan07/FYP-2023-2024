@@ -66,7 +66,7 @@ class _ScanScreenState extends State<ScanScreen> {
       }
 
       // Upload the recorded video file to API endpoint
-      final url = Uri.parse('http://192.168.18.15:8000/upload_video/');
+      final url = Uri.parse('http://192.168.18.248:8050/upload_video/');
       var request = http.MultipartRequest('POST', url);
       request.files.add(
           await http.MultipartFile.fromPath('video_file', _videoFile!.path));
