@@ -34,6 +34,7 @@ def predict_class(image_arr):
 
     return predicted_classes, normalized_scores
 
+
 # preprocess image
 def preprocess_image(image):
     image = image.resize((224, 224))  # Resize the image to match the input size of the model

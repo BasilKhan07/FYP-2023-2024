@@ -241,8 +241,8 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 additionalInfo = 'Blotch: ${myMap['apple_blotch'] ?? 0} %\n';
                                                 additionalInfo += 'Healthy: ${myMap['apple_healthy'] ?? 0} %\n';
                                                 additionalInfo += 'Rotten: ${myMap['apple_rotten'] ?? 0} %\n';
-                                                additionalInfo += 'Scab: ${myMap['apple_scab'] ?? 0} %\n';
-                                              } else if (productName.toLowerCase() == 'green chilli') {
+                                                additionalInfo += 'Scab: ${myMap['apple_scab'] ?? 0} %';
+                                              } else if (productName.toLowerCase() == 'greenchilli') {
                                                 additionalInfo = 'Damaged: ${myMap['greenchilli_damaged'] ?? 0 } %';
                                                 additionalInfo += '\nDried: ${myMap['greenchilli_dried'] ?? 0} %';
                                                 additionalInfo += '\nOld: ${myMap['greenchilli_old'] ?? 0 } %';

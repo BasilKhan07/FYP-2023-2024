@@ -27,7 +27,7 @@ class CustomCategoryCard extends StatelessWidget {
             child: Text(
               categoryName,
               style: const TextStyle(
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -56,18 +56,20 @@ class CustomCategoryCard extends StatelessWidget {
                       ),
                       child: ListTile(
                         title: Text(
-                          productName,
+                          productName.toUpperCase(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
+                            fontSize: 14.5,
                           ),
                         ),
-                        subtitle: Text('Price: Rs. $productPrice per kg / dozen'),
+                        subtitle: Text('Price: Rs. $productPrice per kg / dozen', style: TextStyle(fontSize: 13),),
                       ),
                     );
                   },
                 )
               : const ListTile(
-                  title: Text('No Vegetables listed for Sale'),
+                  title: Text('No Vegetables listed for Sale',
+                  style: TextStyle(fontSize: 15) ,),
                 ),
         ],
       ),

@@ -87,6 +87,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   // );
                   return SingleChildScrollView(
                     child: Card(
+                      color:const Color.fromARGB(255, 200, 234, 199),
                       elevation: 4,
                       margin: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -97,7 +98,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: Text(
                             header,
                             style: const TextStyle(
-                              fontSize: 18,
+                              color: Color.fromARGB(255, 14, 15, 16), 
+                              fontSize: 15,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
