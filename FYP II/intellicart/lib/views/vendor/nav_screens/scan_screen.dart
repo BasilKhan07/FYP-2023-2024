@@ -1,11 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,14 +17,14 @@ class _ScanScreenState extends State<ScanScreen> {
   late bool _isRecording;
   late XFile? _videoFile;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? user;  //user.uid
+  User? user; //user.uid
 
   @override
   void initState() {
     super.initState();
     _isRecording = false;
     _initializeControllerFuture = _initializeCamera();
-     user = _auth.currentUser;
+    user = _auth.currentUser;
   }
 
   Future<void> _initializeCamera() async {
@@ -51,54 +47,45 @@ class _ScanScreenState extends State<ScanScreen> {
         _isRecording = true;
       });
     } catch (e) {
-      print(e);
     }
   }
 
   Future<void> _stopRecording() async {
-  try {
-    final videoFile = await _controller.stopVideoRecording();
-    setState(() {
-      _videoFile = videoFile;
-      _isRecording = false;
-    });
-    print('Video recorded to: ${_videoFile?.path}');
-    if (_isRecording==false) {
-      print("Video is being uploadedddddddddddddddd");
-       // Show upload status prompt
-      _showUploadStatusPrompt(true, "Video will be uploaded soon! Please wait");
-    
-      //print('Video uploaded successfully');
-    }
+    try {
+      final videoFile = await _controller.stopVideoRecording();
+      setState(() {
+        _videoFile = videoFile;
+        _isRecording = false;
+      });
+      if (_isRecording == false) {
+        // Show upload status prompt
+        _showUploadStatusPrompt(
+            true, "Video will be uploaded soon! Please wait");
 
-    // Upload the recorded video file to API endpoint
-    final url = Uri.parse('http://192.168.18.15:8050/upload_video/');
-    var request = http.MultipartRequest('POST', url);
-    request.files.add(await http.MultipartFile.fromPath(
-        'video_file', _videoFile!.path));
-
-    var response = await request.send();
-      if (response.statusCode == 200){
-      // Parse the response and save the results to vendor collection database
-      String responseBody = await response.stream.bytesToString();
-      
-      saveResultsToDatabase(responseBody);
-      if(await saveResultsToDatabase(responseBody))
-      {
-        _showUploadStatusPrompt(true, "Video Uploaded Successfully");
+        //print('Video uploaded successfully');
       }
-      print("Actually uploaded now");
-      // _sendpushnotification();
-    } 
-    else {
-      print('Failed to upload video');
+
+      // Upload the recorded video file to API endpoint
+      final url = Uri.parse('http://192.168.18.248:8050/upload_video/');
+      var request = http.MultipartRequest('POST', url);
+      request.files.add(
+          await http.MultipartFile.fromPath('video_file', _videoFile!.path));
+
+      var response = await request.send();
+      if (response.statusCode == 200) {
+        // Parse the response and save the results to vendor collection database
+        String responseBody = await response.stream.bytesToString();
+
+        saveResultsToDatabase(responseBody);
+        if (await saveResultsToDatabase(responseBody)) {
+          _showUploadStatusPrompt(true, "Video Uploaded Successfully");
+        }
+        // _sendpushnotification();
+      } else {
+      }
+    } catch (e) {
     }
-
-  } catch (e) {
-    print(e);
   }
-}
-
 
   Future<bool> saveResultsToDatabase(String responseBody) async {
     try {
@@ -110,22 +97,18 @@ class _ScanScreenState extends State<ScanScreen> {
       // Save the results to the vendor collection database
       // Get a reference to the collection and document where you want to add data
       DocumentReference documentReference = FirebaseFirestore.instance
-        .collection('vendors')
-        .doc(user!.uid) // Assuming user is already defined and authenticated
-        .collection('video_results')
-        .doc(formattedDate); // Use the formatted date as the document ID
+          .collection('vendors')
+          .doc(user!.uid) // Assuming user is already defined and authenticated
+          .collection('video_results')
+          .doc(formattedDate); // Use the formatted date as the document ID
 
-    // Define the data you want to add
-   
-    // Add the data to the document
-    await documentReference.set(data); // Add to a subcollection if needed
+      // Define the data you want to add
 
+      // Add the data to the document
+      await documentReference.set(data); // Add to a subcollection if needed
 
-      print('Results saved to database');
       return true;
-      
     } catch (e) {
-      print('Error saving results to database: $e');
       return false;
     }
   }
@@ -136,22 +119,20 @@ class _ScanScreenState extends State<ScanScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(uploadedSuccessfully ? 'Upload status' : 'Upload Failed'),
-          content: Text(uploadedSuccessfully
-              ? status
-              : 'Failed to upload the video.'),
+          content: Text(
+              uploadedSuccessfully ? status : 'Failed to upload the video.'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('OK'),
+              child: const Text('OK'),
             ),
           ],
         );
       },
     );
   }
-  
 
   @override
   void dispose() {
@@ -162,7 +143,6 @@ class _ScanScreenState extends State<ScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: FutureBuilder<void>(
         future: _initializeControllerFuture,
         builder: (context, snapshot) {
@@ -176,7 +156,7 @@ class _ScanScreenState extends State<ScanScreen> {
               ),
             );
           } else {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
         },
       ),

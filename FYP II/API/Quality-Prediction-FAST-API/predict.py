@@ -58,4 +58,3 @@ async def predict(image: UploadFile = File(...)):
     timestamp = datetime.now().strftime("%d %B %Y %H:%M:%S")
     print(str(timestamp) + "  --------  " + str({"predictions": predicted_classes}))
     return {"predictions": predicted_classes}
-

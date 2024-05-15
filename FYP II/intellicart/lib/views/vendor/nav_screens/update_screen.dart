@@ -22,7 +22,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   final TextEditingController _priceController = TextEditingController();
 
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dropdownController = TextEditingController();
 
   String? _selectedCategory;
 
@@ -57,8 +57,15 @@ class _UpdateScreenState extends State<UpdateScreen> {
   }
 
   Future<void> _addProduct() async {
+    String productName = _dropdownController.text.toLowerCase();
+    
+    if (_productNames.contains(productName)) {
+      showSnack(context, 'Product already exists');
+      return;
+    }
+
     String res = await _vendorProductController.addProduct(
-      _nameController.text,
+      productName,
       _selectedCategory!,
       _priceController.text,
     );
@@ -74,7 +81,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
       }
     } catch (e) {
       if (context.mounted) {
-          showSnack(context, e.toString());
+        showSnack(context, e.toString());
       }
     }
   }
@@ -213,19 +220,26 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       value: action,
                       child: Text(
                         action,
-                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 177, 181, 182),
+                            fontSize: 12),
                       ),
                     );
                   }).toList(),
                   decoration: const InputDecoration(
                     labelText: 'Action',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                    labelStyle: TextStyle(
+                        color: Color.fromARGB(255, 181, 184, 185),
+                        fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                     ),
                   ),
-                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
-                dropdownColor: const Color.fromARGB(255, 13, 26, 14), 
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 181, 184, 185),
+                      fontSize: 14), // Text color for dropdown items
+                  dropdownColor: const Color.fromARGB(255, 13, 26, 14),
                 ),
                 const SizedBox(height: 10.0),
                 if (_selectedAction != "Add")
@@ -240,33 +254,74 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       return DropdownMenuItem<String>(
                         value: productName,
                         child: Text(
-                          productName,
-                          style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                          productName.toUpperCase(),
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 181, 184, 185),
+                              fontSize: 12),
                         ),
-                        
                       );
                     }).toList(),
+                    // Ensure items are unique by adding a key
+                    key: UniqueKey(),
                     decoration: const InputDecoration(
                       labelText: 'Selling Product Name',
-                      labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                      labelStyle: TextStyle(
+                          color: Color.fromARGB(255, 181, 184, 185),
+                          fontSize: 14),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                        borderSide:
+                            BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                       ),
                     ),
-                    style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
-                    dropdownColor: const Color.fromARGB(255, 13, 26, 14), 
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 181, 184, 185),
+                        fontSize: 14), // Text color for dropdown items
+                    dropdownColor: const Color.fromARGB(255, 13, 26, 14),
                   ),
-                if(_selectedAction == "Add")
-                  TextField(
-                    controller: _nameController,
-                    style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                if (_selectedAction == "Add")
+                  DropdownButtonFormField<String>(
+                    value: _selectedProductName,
+                    onChanged: (String? value) {
+                      setState(() {
+                        _selectedProductName = value;
+                        _dropdownController.text =
+                            value ?? ''; // Update the text in the controller
+                      });
+                    },
+                    items: [
+                      'Orange',
+                      'Banana',
+                      'Apple',
+                      'Tomato',
+                      'Greenchilli'
+                    ].map((String productName) {
+                      return DropdownMenuItem<String>(
+                        value: productName,
+                        child: Text(
+                          productName.toUpperCase(),
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 181, 184, 185),
+                              fontSize: 12),
+                        ),
+                      );
+                    }).toList(),
+                    // Ensure items are unique by adding a key
+                    key: UniqueKey(),
                     decoration: const InputDecoration(
-                      labelText: 'New Product Name',
-                      labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                      labelText: 'Add New Product',
+                      labelStyle: TextStyle(
+                          color: Color.fromARGB(255, 181, 184, 185),
+                          fontSize: 14),
                       enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                        borderSide:
+                            BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                       ),
                     ),
+                    style: const TextStyle(
+                        color: Color.fromARGB(255, 181, 184, 185),
+                        fontSize: 14), // Text color for dropdown items
+                    dropdownColor: const Color.fromARGB(255, 13, 26, 14),
+                    // Assign the controller to the dropdown
                   ),
                 const SizedBox(height: 10.0),
                 DropdownButtonFormField<String>(
@@ -281,35 +336,45 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       value: category,
                       child: Text(
                         category,
-                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 181, 184, 185),
+                            fontSize: 12),
                       ),
                     );
                   }).toList(),
                   decoration: const InputDecoration(
                     labelText: 'Category',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                    labelStyle: TextStyle(
+                        color: Color.fromARGB(255, 181, 184, 185),
+                        fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                     ),
-                    
                   ),
-                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
-  dropdownColor: const Color.fromARGB(255, 13, 26, 14), 
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 181, 184, 185),
+                      fontSize: 14), // Text color for dropdown items
+                  dropdownColor: const Color.fromARGB(255, 13, 26, 14),
                 ),
                 TextField(
                   controller: _priceController,
                   decoration: const InputDecoration(
                     labelText: 'Price for 1 Kg (Rs) or 1 Dozen',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                    labelStyle: TextStyle(
+                        color: Color.fromARGB(255, 181, 184, 185),
+                        fontSize: 14),
                     enabledBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 13, 26, 14)),
                     ),
                   ),
                   keyboardType: TextInputType.number,
                   enabled: !_disablePriceTextField,
-                  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
                 ),
-                const SizedBox(height: 20.0),
+                const SizedBox(height: 30.0),
                 InkWell(
                   onTap: () {
                     _performAction();
@@ -329,7 +394,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           : const Text(
                               'Perform Action',
                               style: TextStyle(
-                                color: Color.fromARGB(255, 181, 184, 185), 
+                                color: Color.fromARGB(255, 181, 184, 185),
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 3,
@@ -376,7 +441,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   },
                   child: const Text(
                     'Update Location',
-                    style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
+                    style: TextStyle(
+                        color: Color.fromARGB(255, 181, 184, 185),
+                        fontSize: 14),
                   ),
                   style: ElevatedButton.styleFrom(
                     primary: const Color.fromARGB(255, 13, 26, 14),

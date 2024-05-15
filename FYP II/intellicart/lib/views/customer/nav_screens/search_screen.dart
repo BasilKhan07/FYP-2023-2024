@@ -241,14 +241,14 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 additionalInfo = 'Blotch: ${myMap['apple_blotch'] ?? 0} %\n';
                                                 additionalInfo += 'Healthy: ${myMap['apple_healthy'] ?? 0} %\n';
                                                 additionalInfo += 'Rotten: ${myMap['apple_rotten'] ?? 0} %\n';
-                                                additionalInfo += 'Scan: ${myMap['apple_scab'] ?? 0} %\n';
-                                              } else if (productName.toLowerCase() == 'green chilli') {
+                                                additionalInfo += 'Scab: ${myMap['apple_scab'] ?? 0} %';
+                                              } else if (productName.toLowerCase() == 'greenchilli') {
                                                 additionalInfo = 'Damaged: ${myMap['greenchilli_damaged'] ?? 0 } %';
                                                 additionalInfo += '\nDried: ${myMap['greenchilli_dried'] ?? 0} %';
                                                 additionalInfo += '\nOld: ${myMap['greenchilli_old'] ?? 0 } %';
                                                 additionalInfo += '\nRipe: ${myMap['greenchilli_ripe' ]?? 0} %';
                                               } else if (productName.toLowerCase() == 'banana') {
-                                                additionalInfo = 'Firm: ${myMap['banana_firm']} %';
+                                                additionalInfo = 'Firm: ${myMap['banana_firm'] ?? 0} %';
                                                 additionalInfo += '\nHeavily bruised: ${myMap['banana_heavilybruised'] ?? 0} %';
                                                 additionalInfo += '\nSlightly bruised: ${myMap['banana_slightlybruised'] ?? 0} %';
                                               } else if (productName.toLowerCase() == 'orange') {
@@ -257,7 +257,7 @@ class _SearchScreenState extends State<SearchScreen> {
                                                 additionalInfo += '\nRotten: ${myMap['orange_rotten'] ?? 0} %';
                                               } else if (productName.toLowerCase() == 'tomato') {
                                                 additionalInfo = 'Old: ${myMap['tomato_old']?? 0} %';
-                                                additionalInfo += '\nRipe: ${myMap['tomato_ripe']}?? 0 %';
+                                                additionalInfo += '\nRipe: ${myMap['tomato_ripe']?? 0} %';
                                                 additionalInfo += '\nRotten: ${myMap['tomato_rotten'] ?? 0} %';
                                                 additionalInfo += '\nUnripe: ${myMap['tomato_unripe'] ?? 0} %';
                                               }

@@ -36,14 +36,12 @@ class ProductsScreen extends StatelessWidget {
               List<dynamic>? vegList = snapshot.data?['Vegetables'];
               List<dynamic>? fruitList = snapshot.data?['Fruits'];
 
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [ 
-                    CustomCategoryCard(categoryName: 'Vegetables',displayList: vegList, image: 'assets/images/vegetables.jpg'),
-                    CustomCategoryCard(categoryName: 'Fruits',displayList: fruitList, image: 'assets/images/fruits.jpg'),
-                  ],
-                ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [ 
+                  SingleChildScrollView(child: CustomCategoryCard(categoryName: 'Vegetables',displayList: vegList, image: 'assets/images/vegetables.jpg')),
+                  SingleChildScrollView(child: CustomCategoryCard(categoryName: 'Fruits',displayList: fruitList, image: 'assets/images/fruits.jpg')),
+                ],
               );
             } //else
           },
