@@ -58,7 +58,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
     setState(() {
       _isLoading = false;
     });
-
+    
     _selectedIndexController.setIndex(0);
   }
 

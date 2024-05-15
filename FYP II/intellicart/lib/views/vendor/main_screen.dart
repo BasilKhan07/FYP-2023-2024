@@ -82,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: _pageIndex,
+          currentIndex: _selectedIndexController.selectedIndex.value,
           onTap: (value) {
             setState(() {
               _selectedIndexController.setIndex(value);
@@ -91,7 +91,7 @@ class _MainScreenState extends State<MainScreen> {
               }
             });
           },
-           unselectedItemColor: Color.fromARGB(255, 152, 155, 156), // Set unselected icon color to white
+          unselectedItemColor: Color.fromARGB(255, 152, 155, 156), // Set unselected icon color to white
           selectedItemColor: const Color.fromARGB(255, 27, 66, 28),
           backgroundColor: Color.fromARGB(255, 13, 26, 14),// Set background color to white
           items: const [
