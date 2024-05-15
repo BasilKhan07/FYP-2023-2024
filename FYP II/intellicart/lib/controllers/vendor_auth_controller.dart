@@ -96,14 +96,25 @@ class VendorAuthController {
       if (email.isNotEmpty && password.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
-        res = 'success';
+
+      if (_auth.currentUser != null) {
+        DocumentSnapshot userDoc = await _firestore.collection('vendors').doc(_auth.currentUser!.uid).get();
+        if (userDoc.exists) {
+          res = 'success';
+        } else {
+          await _auth.signOut();
+          res = 'Invalid user credentials';
+        }
       } else {
-        res = 'Please Fields must not be empty';
+        res = 'User not logged in';
       }
-    } catch (e) {
-      res = e.toString();
+    } else {
+      res = 'Please fields must not be empty';
     }
-    return res;
+  } catch (e) {
+    res = e.toString();
+  }
+  return res;
   }
 
   Future signOut()  async{
