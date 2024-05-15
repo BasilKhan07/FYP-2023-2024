@@ -17,6 +17,8 @@ class _SalesScreenState extends State<SalesScreen> {
   int _quantity = 1;
   late String counter;
   DateTime _selectedDate = DateTime.now();
+  List<Map<String, dynamic>> _salesData = [];
+  double? _totalCost;
 
   @override
   void initState() {
@@ -87,7 +89,7 @@ class _SalesScreenState extends State<SalesScreen> {
         double totalCost = _calculateTotalCost(productPrice);
 
         String productName = _products!
-        .firstWhere((product) => product.id == _selectedProductId)['name'];
+            .firstWhere((product) => product.id == _selectedProductId)['name'];
 
         DocumentSnapshot salesDoc = await transaction.get(salesRef);
 
@@ -109,10 +111,12 @@ class _SalesScreenState extends State<SalesScreen> {
           });
         }
 
-        Map<String, dynamic> data = { counter : {
-          'productName' : productName,
-          'quantity' : _quantity,
-          'totalCost' : totalCost }
+        Map<String, dynamic> data = {
+          counter: {
+            'productName': productName,
+            'quantity': _quantity,
+            'totalCost': totalCost
+          }
         };
 
         transaction.set(salesRef, data, SetOptions(merge: true));
@@ -133,7 +137,10 @@ class _SalesScreenState extends State<SalesScreen> {
 
   Future<void> _fetchSalesByDate(DateTime selectedDate) async {
     try {
-      String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      // Format the selected date to match the Firestore date format
+      String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+
+      // Create a reference to the sales document for the selected date
       DocumentSnapshot salesDoc = await FirebaseFirestore.instance
           .collection('vendors')
           .doc(_vendorId)
@@ -142,21 +149,42 @@ class _SalesScreenState extends State<SalesScreen> {
           .get();
 
       if (salesDoc.exists) {
-        Map<String, dynamic> salesData = salesDoc.data() as Map<String, dynamic>;
+        // Sales data exists for the selected date
+        Map<String, dynamic>? salesData =
+            salesDoc.data() as Map<String, dynamic>?;
 
-        double totalCost = salesData['totalCost'] ?? 0.0;
-        print('Total Cost for $_selectedDate: $totalCost');
+        if (salesData != null) {
+          double totalCost = 0;
+          List<Map<String, dynamic>> salesList = [];
 
-        salesData.forEach((productId, productData) {
-          if (productId != 'totalCost' && productId != 'date') {
-            String productName = _products!
-                .firstWhere((product) => product.id == productId)['name'];
-            int quantity = productData as int; // Get the quantity directly
-            print('$productName: $quantity');
-          }
-        });
+          // Iterate over each sale in the sales data
+          salesData.forEach((key, value) {
+            if (key != 'totalCost' && key != 'date') {
+              // Add each sale's total cost to the totalCost variable
+              totalCost += value['totalCost'].toDouble();
+
+              // Create a map for each sale and add it to the salesList
+              salesList.add({
+                'productName': value['productName'],
+                'quantity': value['quantity'],
+              });
+            }
+          });
+
+          // Update the state with the fetched sales data
+          setState(() {
+            _salesData = salesList;
+            _totalCost = totalCost;
+          });
+
+          // Display the total cost for the selected date
+          print('Total Cost for $formattedDate: $totalCost');
+        } else {
+          print('No sales data found for $formattedDate');
+        }
       } else {
-        print('No sales recorded for $_selectedDate');
+        // No sales recorded for the selected date
+        print('No sales recorded for $formattedDate');
       }
     } catch (e) {
       print('Error fetching sales: $e');
@@ -173,114 +201,174 @@ class _SalesScreenState extends State<SalesScreen> {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color.fromARGB(255, 6, 24, 8), 
+              Color.fromARGB(255, 6, 24, 8),
               Color.fromARGB(255, 109, 161, 121),
             ],
           ),
         ),
         child: _products == null
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  DropdownButtonFormField(
-  value: _selectedProductId,
-  items: _products!
-      .map((product) => DropdownMenuItem(
-            value: product.id,
-            child: Text(
-              product['name'],
-              style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
-            ),
-          ))
-      .toList(),
-  onChanged: (value) {
-    setState(() {
-      _selectedProductId = value.toString();
-    });
-  },
-  decoration: const InputDecoration(
-    labelText: 'Select Product',
-    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
-    enabledBorder: UnderlineInputBorder(
-      borderSide: BorderSide(color: Color.fromARGB(255, 181, 184, 185)),
-    ),
-  ),
-  style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Text color for dropdown items
-  dropdownColor: const Color.fromARGB(255, 13, 26, 14), // Background color of dropdown
-),
-
-                  const SizedBox(height: 20.0),
-                  TextFormField(
-                    initialValue: '1',
-                    keyboardType: TextInputType.number,
-                    style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
-                    decoration: const InputDecoration(
-                      labelText: 'Quantity',
-                      labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color.fromARGB(255, 181, 184, 185)),
-                      ),
-                    ),
-                    onChanged: (value) {
-                      setState(() {
-                        _quantity = int.tryParse(value) ?? 1;
-                      });
-                    },
-                  ),
-                  const SizedBox(height: 20.0),
-                  ElevatedButton(
-  onPressed: () {
-    _addSale();
-  },
-  style: ElevatedButton.styleFrom(
-    primary: const Color.fromARGB(255, 13, 26, 14), // Change button color here
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-    ),
-  ),
-  child: const Text('Record Sale', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)),
-),
-
-                  const SizedBox(height: 20.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text('Select Date: ', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)),
-                      const SizedBox(width: 8.0),
-                      ElevatedButton(
-                        
-                        onPressed: () async {
-                          DateTime? pickedDate = await showDatePicker(
-                            context: context,
-                            initialDate: _selectedDate,
-                            firstDate: DateTime(2020),
-                            lastDate: DateTime.now(),
-                          );
-                          if (pickedDate != null) {
-                            setState(() {
-                              _selectedDate = pickedDate;
-                            });
-                            // Fetch sales data for selected date
-                            _fetchSalesByDate(pickedDate);
-                          }
-                        },
-                        
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
-                           ),
-                          primary: const Color.fromARGB(255, 13, 26, 14), // Change button color here
+            ? const Center(child: CircularProgressIndicator())
+            : Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    DropdownButtonFormField(
+                      value: _selectedProductId,
+                      items: _products!
+                          .map((product) => DropdownMenuItem(
+                                value: product.id,
+                                child: Text(
+                                  product['name'],
+                                  style: const TextStyle(
+                                      color: Color.fromARGB(255, 181, 184, 185),
+                                      fontSize: 14),
+                                ),
+                              ))
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedProductId = value.toString();
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Select Product',
+                        labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 181, 184, 185),
+                            fontSize: 14),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 181, 184, 185)),
                         ),
-                        child: const Text('Pick Date', style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14)),
                       ),
-                    ],
-                  ),
-                ],
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 181, 184, 185),
+                          fontSize: 14), // Text color for dropdown items
+                      dropdownColor: const Color.fromARGB(
+                          255, 13, 26, 14), // Background color of dropdown
+                    ),
+                    const SizedBox(height: 20.0),
+                    TextFormField(
+                      initialValue: '1',
+                      keyboardType: TextInputType.number,
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 181, 184, 185),
+                          fontSize: 14),
+                      decoration: const InputDecoration(
+                        labelText: 'Quantity',
+                        labelStyle: TextStyle(
+                            color: Color.fromARGB(255, 181, 184, 185),
+                            fontSize: 14),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 181, 184, 185)),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        setState(() {
+                          _quantity = int.tryParse(value) ?? 1;
+                        });
+                      },
+                    ),
+                    const SizedBox(height: 20.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        _addSale();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: const Color.fromARGB(
+                            255, 13, 26, 14), // Change button color here
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              10), // Adjust the radius as needed
+                        ),
+                      ),
+                      child: const Text('Record Sale',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 181, 184, 185),
+                              fontSize: 14)),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text('Select Date: ',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 181, 184, 185),
+                                fontSize: 14)),
+                        const SizedBox(width: 8.0),
+                        ElevatedButton(
+                          onPressed: () async {
+                            DateTime? pickedDate = await showDatePicker(
+                              context: context,
+                              initialDate: _selectedDate,
+                              firstDate: DateTime(2020),
+                              lastDate: DateTime.now(),
+                            );
+                            if (pickedDate != null) {
+                              setState(() {
+                                _selectedDate = pickedDate;
+                              });
+                              // Fetch sales data for selected date
+                              _fetchSalesByDate(pickedDate);
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                  10), // Adjust the radius as needed
+                            ),
+                            primary: const Color.fromARGB(
+                                255, 13, 26, 14), // Change button color here
+                          ),
+                          child: const Text('Pick Date',
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 181, 184, 185),
+                                  fontSize: 14)),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20.0),
+                    // Display sales data
+                    Text(
+                      'Sales Data for ${DateFormat('yyyy-MM-dd').format(_selectedDate)}',
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 181, 184, 185),
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: 10.0),
+                    if (_totalCost != null) ...{
+                      Text(
+                        'Total Cost: $_totalCost',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 181, 184, 185),
+                            fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 10.0),
+                      for (var sale in _salesData) ...{
+                        Text(
+                          '${sale['productName']}: ${sale['quantity']}',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 181, 184, 185),
+                              fontSize: 14),
+                          textAlign: TextAlign.center,
+                        ),
+                      },
+                    } else ...{
+                      Text(
+                        'No sales data available for selected date',
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 181, 184, 185),
+                            fontSize: 14),
+                        textAlign: TextAlign.center,
+                      ),
+                    },
+                  ],
+                ),
               ),
-            ),
       ),
     );
   }
