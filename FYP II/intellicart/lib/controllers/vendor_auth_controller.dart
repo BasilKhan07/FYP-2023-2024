@@ -63,20 +63,18 @@ class VendorAuthController {
       if (email.isNotEmpty &&
           fullName.isNotEmpty &&
           phoneNumber.isNotEmpty &&
-          password.isNotEmpty &&
-          image != null) {
+          password.isNotEmpty ) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
-        String profileImageUrl = await _uploadProfileImageToStorage(image);
+        
         await _firestore.collection('vendors').doc(cred.user!.uid).set(
           {
             'email': email,
             'fullName': fullName,
             'phoneNumber': phoneNumber,
             'vendorId': cred.user!.uid,
-            'profileImage': profileImageUrl,
           },
         );
 
@@ -109,7 +107,7 @@ class VendorAuthController {
         res = 'User not logged in';
       }
     } else {
-      res = 'Please fields must not be empty';
+      res = 'Please fields must not be emptyyyyyyyyyyy';
     }
   } catch (e) {
     res = e.toString();
