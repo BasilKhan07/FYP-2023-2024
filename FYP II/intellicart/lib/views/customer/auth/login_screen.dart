@@ -52,7 +52,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
         _emailController.clear(); // Clear the email field
         _passwordController.clear(); // Clear the password field
         if (context.mounted) {
-          return showSnack(context, res);
+          return showSnack(context, "Invalid ID or Password");
         }
       }
     } else {

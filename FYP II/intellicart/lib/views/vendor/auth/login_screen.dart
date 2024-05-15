@@ -52,7 +52,7 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
         _emailController.clear(); 
         _passwordController.clear(); 
         if (context.mounted) {
-          return showSnack(context, res);
+          return showSnack(context, "Invalid Email ID or Password");
         }
       }
     } else {
