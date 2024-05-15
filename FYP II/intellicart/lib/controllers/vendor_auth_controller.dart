@@ -75,6 +75,7 @@ class VendorAuthController {
             'fullName': fullName,
             'phoneNumber': phoneNumber,
             'vendorId': cred.user!.uid,
+            'location': const GeoPoint(24.9430021, 67.1780262),
           },
         );
 
@@ -107,7 +108,7 @@ class VendorAuthController {
         res = 'User not logged in';
       }
     } else {
-      res = 'Please fields must not be emptyyyyyyyyyyy';
+      res = 'Please fields must not be empty';
     }
   } catch (e) {
     res = e.toString();
