@@ -13,21 +13,29 @@ class CustomerLoginScreen extends StatefulWidget {
 
 class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final CustomerAuthController _authController = CustomerAuthController();
-
-  late String email;
-
-  late String password;
-
+  
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  
   bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   _loginUsers() async {
     setState(() {
       _isLoading = true;
     });
     if (_formKey.currentState!.validate()) {
-      String res = await _authController.loginUsers(email, password);
+      String res = await _authController.loginUsers(
+        _emailController.text,
+        _passwordController.text,
+      );
       if (res == 'success' && context.mounted) {
         Navigator.pushReplacement(
           context,
@@ -38,8 +46,13 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
           ),
         );
       } else {
+        setState(() {
+          _isLoading = false;
+        });
+        _emailController.clear(); // Clear the email field
+        _passwordController.clear(); // Clear the password field
         if (context.mounted) {
-          return showSnack(context, res);
+          return showSnack(context, "Invalid ID or Password");
         }
       }
     } else {
@@ -54,7 +67,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -72,14 +85,15 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
               const Text(
                 'Login Customer\'s Account',
                 style: TextStyle(
-                  
                   fontWeight: FontWeight.bold,
-                  color: Color.fromARGB(255, 236, 236, 236), fontSize: 15// Change text color to white
+                  color: Color.fromARGB(255, 236, 236, 236),
+                  fontSize: 15,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(13.0),
                 child: TextFormField(
+                  controller: _emailController,
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Please Email field must not be empty';
@@ -87,19 +101,23 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                       return null;
                     }
                   },
-                  onChanged: (value) {
-                    email = value;
-                  },
-                  style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 181, 184, 185),
+                    fontSize: 14,
+                  ),
                   decoration: const InputDecoration(
                     labelText: 'Enter Email Address',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 181, 184, 185),
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(13.0),
                 child: TextFormField(
+                  controller: _passwordController,
                   obscureText: true,
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -108,13 +126,16 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                       return null;
                     }
                   },
-                  onChanged: (value) {
-                    password = value;
-                  },
-                  style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                  style: const TextStyle(
+                    color: Color.fromARGB(255, 181, 184, 185),
+                    fontSize: 14,
+                  ),
                   decoration: const InputDecoration(
                     labelText: 'Enter Password',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
+                    labelStyle: TextStyle(
+                      color: Color.fromARGB(255, 181, 184, 185),
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ),
@@ -127,7 +148,7 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                   width: MediaQuery.of(context).size.width - 40,
                   height: 50,
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 13, 26, 14), // Change button color
+                    color: const Color.fromARGB(255, 13, 26, 14),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
@@ -138,7 +159,8 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                         : const Text(
                             'Login',
                             style: TextStyle(
-                              color: Color.fromARGB(255, 181, 184, 185), fontSize: 14,
+                              color: Color.fromARGB(255, 181, 184, 185),
+                              fontSize: 14,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 3,
                             ),
@@ -151,7 +173,10 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                 children: [
                   const Text(
                     'Need An Account?',
-                    style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 181, 184, 185),
+                      fontSize: 14,
+                    ),
                   ),
                   TextButton(
                     onPressed: () {
@@ -164,7 +189,10 @@ class _CustomerLoginScreenState extends State<CustomerLoginScreen> {
                     },
                     child: const Text(
                       'Register',
-                      style: TextStyle(color: Color.fromARGB(255, 241, 242, 242), fontSize: 14), // Change text color to white
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 241, 242, 242),
+                        fontSize: 14,
+                      ),
                     ),
                   )
                 ],

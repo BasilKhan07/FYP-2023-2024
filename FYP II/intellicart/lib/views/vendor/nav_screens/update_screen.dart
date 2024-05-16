@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intellicart/controllers/vendor_location_controller.dart';
 import 'package:intellicart/controllers/vendor_product_controller.dart';
+import 'package:intellicart/provider/selected_index_provider.dart';
 import 'package:intellicart/utils/show_snackbar.dart';
 
 class UpdateScreen extends StatefulWidget {
@@ -23,6 +25,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
   final TextEditingController _priceController = TextEditingController();
 
   final TextEditingController _dropdownController = TextEditingController();
+
+  final SelectedIndexController _selectedIndexController = Get.find();
 
   String? _selectedCategory;
 
@@ -54,6 +58,8 @@ class _UpdateScreenState extends State<UpdateScreen> {
     setState(() {
       _isLoading = false;
     });
+    
+    _selectedIndexController.setIndex(0);
   }
 
   Future<void> _addProduct() async {

@@ -57,36 +57,42 @@ class CustomerAuthController {
 
   Future<String> signUpUsers(String email, String fullName, String phoneNumber,
       String password, Uint8List? image) async {
-    String res = 'Some error occured';
+    String res = 'Some error occurred';
     try {
       if (email.isNotEmpty &&
           fullName.isNotEmpty &&
           phoneNumber.isNotEmpty &&
-          password.isNotEmpty &&
-          image != null) {
+          password.isNotEmpty) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
-        String profileImageUrl = await _uploadProfileImageToStorage(image);
         await _firestore.collection('customers').doc(cred.user!.uid).set(
           {
             'email': email,
             'fullName': fullName,
             'phoneNumber': phoneNumber,
             'customerId': cred.user!.uid,
-            'profileImage': profileImageUrl,
           },
         );
         res = "success";
       } else {
         res = 'Please fields must not be empty';
       }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        res = 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        res = 'The account already exists for that email.';
+      }
     } catch (e) {
       res = e.toString();
     }
     return res;
-  }
+}
+
+
+  
 
   Future<String> loginUsers(String email, String password) async {
     String res = 'Something went wrong';
@@ -94,14 +100,25 @@ class CustomerAuthController {
       if (email.isNotEmpty && password.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
-        res = 'success';
+
+      if (_auth.currentUser != null) {
+        DocumentSnapshot userDoc = await _firestore.collection('customers').doc(_auth.currentUser!.uid).get();
+        if (userDoc.exists) {
+          res = 'success';
+        } else {
+          await _auth.signOut();
+          res = 'Invalid user credentials';
+        }
       } else {
-        res = 'Please Fields must not be empty';
+        res = 'User not logged in';
       }
-    } catch (e) {
-      res = e.toString();
+    } else {
+      res = 'Please fields must not be empty';
     }
-    return res;
+  } catch (e) {
+    res = e.toString();
+  }
+  return res;
   }
 
   Future signOut() async {

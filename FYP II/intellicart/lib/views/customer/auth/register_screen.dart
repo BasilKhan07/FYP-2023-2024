@@ -30,31 +30,34 @@ class _CustomerRegisterScreenState extends State<CustomerRegisterScreen> {
   Uint8List? _image;
 
   _signUpUser() async {
+  setState(() {
+    _isLoading = true;
+  });
+  if (_formKey.currentState!.validate()) {
+    String res = await _authController.signUpUsers(
+      email,
+      fullName,
+      phoneNumber,
+      password,
+      _image,
+    );
     setState(() {
-      _isLoading = true;
+      _isLoading = false;
     });
-    if (_formKey.currentState!.validate()) {
-      await _authController
-          .signUpUsers(email, fullName, phoneNumber, password, _image)
-          .whenComplete(
-        () {
-          setState(() {
-            _formKey.currentState!.reset();
-            _isLoading = false;
-            _image = null;
-          });
-        },
-      );
-      if (context.mounted) {
-        return showSnack(context, 'Congratulations, Account Created');
-      }
+    if (res == 'success') {
+      showSnack(context, 'Congratulations, Account Created');
+      _formKey.currentState!.reset();
+      _image = null;
     } else {
-      setState(() {
-        _isLoading = false;
-      });
-      return showSnack(context, 'Please fields must not be empty');
+      showSnack(context, "Account already in use");
     }
+  } else {
+    setState(() {
+      _isLoading = false;
+    });
+    showSnack(context, 'Please fields must not be empty');
   }
+}
 
   selectGalleryImage() async {
     Uint8List im = await _authController.pickProfileImage(ImageSource.gallery);

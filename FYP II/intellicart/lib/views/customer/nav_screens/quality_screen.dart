@@ -40,7 +40,7 @@ class _ImagePredictionPageState extends State<ImagePredictionPage> {
     if (_image == null) return;
 
     String apiUrl =
-        'http://192.168.18.248:8000/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
+        'http://20.75.249.116:8010/predict/'; //use your PC's IP. go to ipconfig and then find your IP there.
     // wifi on phone and laptop should be same
     var request =
         http.MultipartRequest('POST', Uri.parse(apiUrl));

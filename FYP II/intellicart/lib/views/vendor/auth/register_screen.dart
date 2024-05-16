@@ -25,29 +25,35 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
   Uint8List? _image;
 
   _signUpUser() async {
+  setState(() {
+    _isLoading = true;
+  });
+  if (_formKey.currentState!.validate()) {
+    String res = await _authController.signUpUsers(
+      email,
+      fullName,
+      phoneNumber,
+      password,
+      _image,
+    );
     setState(() {
-      _isLoading = true;
+      _isLoading = false;
     });
-    if (_formKey.currentState!.validate()) {
-      await _authController
-          .signUpUsers(email, fullName, phoneNumber, password, _image)
-          .whenComplete(() {
-        setState(() {
-          _formKey.currentState!.reset();
-          _isLoading = false;
-          _image = null;
-        });
-      });
-      if (context.mounted) {
-        return showSnack(context, 'Congratulations, Account Created');
-      }
+    if (res == 'success') {
+      showSnack(context, 'Congratulations, Account Created');
+      _formKey.currentState!.reset();
+      _image = null;
     } else {
-      setState(() {
-        _isLoading = false;
-      });
-      return showSnack(context, 'Please fields must not be empty');
+      showSnack(context, "Account already in use");
     }
+  } else {
+    setState(() {
+      _isLoading = false;
+    });
+    showSnack(context, 'Please fields must not be empty');
   }
+}
+
 
   selectGalleryImage() async {
     Uint8List im = await _authController.pickProfileImage(ImageSource.gallery);
@@ -62,7 +68,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
       canPop: false,
       child: Scaffold(
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -130,7 +136,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                         onChanged: (value) {
                           email = value;
                         },
-                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                         decoration: const InputDecoration(
                           labelText: 'Enter Email',
                           labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
@@ -150,7 +156,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                         onChanged: (value) {
                           fullName = value;
                         },
-                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                         decoration: const InputDecoration(
                           labelText: 'Enter Full Name',
                           labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
@@ -170,7 +176,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                         onChanged: (value) {
                           phoneNumber = value;
                         },
-                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                         decoration: const InputDecoration(
                           labelText: 'Enter Phone Number',
                           labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
@@ -191,7 +197,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                         onChanged: (value) {
                           password = value;
                         },
-                        style: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
+                        style: const TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change text color to white
                         decoration: const InputDecoration(
                           labelText: 'Password',
                           labelStyle: TextStyle(color: Color.fromARGB(255, 181, 184, 185), fontSize: 14), // Change label text color to white
@@ -206,7 +212,7 @@ class _VendorRegisterScreenState extends State<VendorRegisterScreen> {
                         width: MediaQuery.of(context).size.width - 40,
                         height: 50,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 13, 26, 14), // Change button color
+                          color: const Color.fromARGB(255, 13, 26, 14), // Change button color
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Center(

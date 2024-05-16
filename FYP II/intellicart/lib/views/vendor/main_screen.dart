@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intellicart/controllers/vendor_auth_controller.dart';
+import 'package:intellicart/provider/selected_index_provider.dart';
 import 'package:intellicart/views/vendor/nav_screens/scan_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/dashboard_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/product_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/sales_screen.dart';
 import 'package:intellicart/views/vendor/nav_screens/update_screen.dart';
+import 'package:get/get.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -15,6 +17,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final VendorAuthController _authController = VendorAuthController();
+  final SelectedIndexController _selectedIndexController = Get.put(SelectedIndexController());
 
   int _pageIndex = 0;
 
@@ -79,16 +82,16 @@ class _MainScreenState extends State<MainScreen> {
         ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: _pageIndex,
+          currentIndex: _selectedIndexController.selectedIndex.value,
           onTap: (value) {
             setState(() {
-              _pageIndex = value;
+              _selectedIndexController.setIndex(value);
               if (_pageIndex == 1) {
                 _handleScanPageCalled();
               }
             });
           },
-           unselectedItemColor: Color.fromARGB(255, 152, 155, 156), // Set unselected icon color to white
+          unselectedItemColor: Color.fromARGB(255, 152, 155, 156), // Set unselected icon color to white
           selectedItemColor: const Color.fromARGB(255, 27, 66, 28),
           backgroundColor: Color.fromARGB(255, 13, 26, 14),// Set background color to white
           items: const [
@@ -114,7 +117,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
           ],
         ),
-        body: _pages[_pageIndex],
+        body: Obx(() => _pages[_selectedIndexController.selectedIndex.value]),
       ),
     );
   }

@@ -63,20 +63,19 @@ class VendorAuthController {
       if (email.isNotEmpty &&
           fullName.isNotEmpty &&
           phoneNumber.isNotEmpty &&
-          password.isNotEmpty &&
-          image != null) {
+          password.isNotEmpty ) {
         UserCredential cred = await _auth.createUserWithEmailAndPassword(
           email: email,
           password: password,
         );
-        String profileImageUrl = await _uploadProfileImageToStorage(image);
+        
         await _firestore.collection('vendors').doc(cred.user!.uid).set(
           {
             'email': email,
             'fullName': fullName,
             'phoneNumber': phoneNumber,
             'vendorId': cred.user!.uid,
-            'profileImage': profileImageUrl,
+            'location': const GeoPoint(24.9430021, 67.1780262),
           },
         );
 
@@ -96,14 +95,25 @@ class VendorAuthController {
       if (email.isNotEmpty && password.isNotEmpty) {
         await _auth.signInWithEmailAndPassword(
             email: email, password: password);
-        res = 'success';
+
+      if (_auth.currentUser != null) {
+        DocumentSnapshot userDoc = await _firestore.collection('vendors').doc(_auth.currentUser!.uid).get();
+        if (userDoc.exists) {
+          res = 'success';
+        } else {
+          await _auth.signOut();
+          res = 'Invalid user credentials';
+        }
       } else {
-        res = 'Please Fields must not be empty';
+        res = 'User not logged in';
       }
-    } catch (e) {
-      res = e.toString();
+    } else {
+      res = 'Please fields must not be empty';
     }
-    return res;
+  } catch (e) {
+    res = e.toString();
+  }
+  return res;
   }
 
   Future signOut()  async{
