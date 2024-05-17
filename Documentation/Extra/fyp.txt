@@ -1,0 +1,25 @@
+D:\FAST\FYP\Final Year Project\FYP II\intellicart>keytool -list -v -alias androiddebugkey -keystore %USERPROFILE%\.android\debug.keystore
+Enter keystore password:
+Alias name: androiddebugkey
+Creation date: 18-Jul-2023
+Entry type: PrivateKeyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: C=US, O=Android, CN=Android Debug
+Issuer: C=US, O=Android, CN=Android Debug
+Serial number: 1
+Valid from: Tue Jul 18 11:47:42 PKT 2023 until: Thu Jul 10 11:47:42 PKT 2053
+Certificate fingerprints:
+         SHA1: 94:7F:03:51:F7:93:DA:4A:BD:3F:C0:CD:DE:3B:07:6E:17:41:99:38
+         SHA256: E4:B9:3B:76:4C:80:43:32:59:B0:79:A1:C2:1D:F2:AC:B0:E6:BC:77:4E:93:67:8C:66:BA:96:E0:78:38:98:27
+Signature algorithm name: SHA1withRSA (weak)
+Subject Public Key Algorithm: 2048-bit RSA key
+Version: 1
+
+Warning:
+The certificate uses the SHA1withRSA signature algorithm which is considered a security risk.
+
+
+
+033ef3ae-a1ac-4dd5-9db2-af8638e064e0
+033ef3ae-a1ac-4dd5-9db2-af8638e064e0
